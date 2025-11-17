@@ -1,13 +1,28 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Tema base do aplicativo -->
+    <!-- Tema Base para Modo Claro -->
     <style name="Theme.MinhaCaixa" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Nenhuma customização por enquanto para garantir a estabilidade. -->
+        <!-- Cores -->
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorPrimary">@color/green_500</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Atributos Customizados -->
+        <item name="fabIconColor">@color/white</item>
+        <item name="editTextBackground">@drawable/edit_text_background</item>
+        <item name="quantityButtonBackground">@drawable/quantity_button_background</item>
+
+        <!-- Barra de Status -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <!-- Estilo para o Floating Action Button que foi removido acidentalmente -->
+    <!-- Estilo do FAB -->
     <style name="MyFloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">@color/green_500</item>
-        <item name="tint">@color/white</item>
+        <item name="tint">?attr/fabIconColor</item>
         <item name="strokeColor">@color/black</item>
         <item name="strokeWidth">2dp</item>
     </style>

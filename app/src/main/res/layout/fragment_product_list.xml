@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorSurface"
     tools:context=".ProductListFragment">
 
     <!-- Container Principal -->
@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Meus Produtos"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="34sp"
             android:textStyle="bold"
             android:paddingStart="24dp"
@@ -54,7 +54,7 @@
     <!-- Botão de Adicionar Produto (FAB) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_product"
-        style="@style/MyFloatingActionButton" 
+        style="@style/MyFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

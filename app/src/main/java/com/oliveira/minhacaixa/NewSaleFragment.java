@@ -62,7 +62,7 @@ public class NewSaleFragment extends Fragment {
         setupRecyclerViews();
         setupSearch();
         observeSearchResults();
-        updateCartVisibility(); // Chamada inicial para configurar o estado do botão
+        updateCartVisibility();
     }
 
     private void bindViews(View view) {
@@ -183,8 +183,16 @@ public class NewSaleFragment extends Fragment {
         emptyCartView.setVisibility(isCartEmpty ? View.VISIBLE : View.GONE);
         cartRecyclerView.setVisibility(isCartEmpty ? View.GONE : View.VISIBLE);
 
-        // Habilita/desabilita o botão e muda a cor
         buttonFinalizeSale.setEnabled(!isCartEmpty);
-        buttonFinalizeSale.setBackgroundColor(isCartEmpty ? ContextCompat.getColor(getContext(), R.color.gray_400) : ContextCompat.getColor(getContext(), R.color.green_500));
+        if (isCartEmpty) {
+            buttonFinalizeSale.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray_400));
+        } else {
+            buttonFinalizeSale.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_500));
+            // CORREÇÃO: Define a cor do texto com base no tema
+            int textColor = (getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                    ? ContextCompat.getColor(getContext(), R.color.black)
+                    : ContextCompat.getColor(getContext(), R.color.white);
+            buttonFinalizeSale.setTextColor(textColor);
+        }
     }
 }

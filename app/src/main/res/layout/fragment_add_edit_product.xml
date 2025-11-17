@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorSurface"
     tools:context=".AddEditProductFragment">
 
     <!-- Cabeçalho -->
@@ -16,6 +16,7 @@
         android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_arrow_back"
+        app:tint="?attr/colorOnSurface"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Cadastrar Produto"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/button_back"
@@ -40,7 +41,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:text="Nome do Produto"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_back" />
@@ -51,10 +52,11 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/edit_text_background"
+        android:background="?attr/editTextBackground"
         android:hint="Ex: Maçã Gala"
-        android:inputType="textCapSentences" 
+        android:inputType="textCapSentences"
         android:paddingHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_product_name" />
@@ -66,7 +68,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="Preço (R$)"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_product_name" />
@@ -77,10 +79,11 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/edit_text_background"
+        android:background="?attr/editTextBackground"
         android:hint="0,00"
         android:inputType="number"
         android:paddingHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_product_price" />
@@ -92,7 +95,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="Estoque"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_product_price" />
@@ -103,10 +106,11 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/edit_text_background"
+        android:background="?attr/editTextBackground"
         android:hint="0"
         android:inputType="number"
         android:paddingHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_product_stock" />
@@ -124,7 +128,7 @@
         app:cornerRadius="16dp"
         app:icon="@drawable/ic_save"
         app:iconGravity="textStart"
-        app:layout_constraintBottom_toTopOf="@id/button_delete"
+        app:layout_constraintBottom_toTopOf="@+id/button_delete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

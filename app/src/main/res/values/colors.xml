@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Cores Principais -->
+    <!-- Cores base do App -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Cores da Marca (Baseadas nos protótipos) -->
-    <color name="green_500">#22C55E</color>
-    <color name="red_500">#EF4444</color>
+    <!-- Tons de Verde -->
+    <color name="green_200">#A5D6A7</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="green_700">#388E3C</color> <!-- COR ADICIONADA -->
 
-    <!-- Tons de Cinza (Para textos e fundos) -->
-    <color name="gray_100">#F3F4F6</color>
-    <color name="gray_200">#E5E7EB</color>
-    <color name="gray_300">#D1D5DB</color>
-    <color name="gray_500">#6B7280</color>
-    <color name="gray_600">#4B5563</color>
-    <color name="gray_700">#374151</color>
-    
-    <!-- COR ADICIONADA PARA CORRIGIR O ERRO -->
-    <color name="gray_400">#9CA3AF</color>
+    <!-- Tons de Cinza -->
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_900">#212121</color> <!-- COR ADICIONADA -->
+
+    <!-- Tons de Vermelho -->
+    <color name="red_500">#F44336</color>
 </resources>

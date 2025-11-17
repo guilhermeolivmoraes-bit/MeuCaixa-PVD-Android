@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="16dp"
-    app:strokeColor="@color/gray_300"
+    app:strokeColor="?attr/colorOnSurface"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Nome do Produto"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
