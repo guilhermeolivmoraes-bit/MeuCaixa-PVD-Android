@@ -5,11 +5,11 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/navigation_dashboard">
 
-    <!-- Tela Dashboard -->
+    <!-- Tela Dashboard (Início) -->
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.oliveira.minhacaixa.DashboardFragment"
-        android:label="Dashboard"
+        android:label="Início"
         tools:layout="@layout/fragment_dashboard" />
 
     <!-- Tela Lista de Produtos -->
@@ -17,16 +17,14 @@
         android:id="@+id/navigation_products"
         android:name="com.oliveira.minhacaixa.ProductListFragment"
         android:label="Meus Produtos"
-        tools:layout="@layout/fragment_product_list">
-        <!-- A action local foi removida daqui -->
-    </fragment>
+        tools:layout="@layout/fragment_product_list" />
 
     <!-- Tela Adicionar/Editar -->
     <fragment
         android:id="@+id/addEditProductFragment"
         android:name="com.oliveira.minhacaixa.AddEditProductFragment"
         android:label="Adicionar/Editar Produto"
-        tools:layout="@layout/fragment_add_edit_product" >
+        tools:layout="@layout/fragment_add_edit_product">
         <argument
             android:name="productId"
             app:argType="long"
@@ -47,11 +45,16 @@
         android:label="Relatórios"
         tools:layout="@layout/fragment_reports" />
 
-    <!-- ======================================================= -->
-    <!--     AÇÃO GLOBAL PARA ABRIR A TELA DE ADICIONAR/EDITAR   -->
-    <!-- ======================================================= -->
+    <!-- Ação Global para Adicionar/Editar Produto -->
     <action
         android:id="@+id/action_global_to_addEditProduct"
         app:destination="@id/addEditProductFragment" />
+
+    <!-- CORREÇÃO: Ação para voltar ao Início de forma limpa -->
+    <action
+        android:id="@+id/action_global_to_dashboard"
+        app:destination="@id/navigation_dashboard"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
 </navigation>

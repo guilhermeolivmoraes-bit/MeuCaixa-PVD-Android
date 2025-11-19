@@ -1,10 +1,10 @@
 package com.oliveira.minhacaixa;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI; // 1. IMPORT NECESSÁRIO
+import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,18 +14,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNavView = findViewById(R.id.bottom_nav_view);
-
-        // Acessa o NavController a partir do NavHostFragment
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_view);
 
-        // --- A SOLUÇÃO FINAL ---
-        // 2. Voltando a usar a linha "mágica" do NavigationUI.
-        // Agora que o projeto está limpo e 100% em Java, esta é a forma correta e mais estável
-        // de conectar a barra de navegação ao controlador.
-        // Ela gerencia a navegação entre as abas e a pilha de navegação (back stack) automaticamente.
-        NavigationUI.setupWithNavController(bottomNavView, navController);
+        // Configura a navegação padrão
+        NavigationUI.setupWithNavController(bottomNav, navController);
+
+        // CORREÇÃO: Adiciona um listener para tratar o clique no botão "Início"
+        bottomNav.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_dashboard) {
+                // Usa a ação customizada para limpar a pilha e voltar ao início
+                navController.navigate(R.id.action_global_to_dashboard);
+                return true;
+            } else {
+                // Para todos os outros itens, usa o comportamento padrão
+                return NavigationUI.onNavDestinationSelected(item, navController);
+            }
+        });
     }
 }
