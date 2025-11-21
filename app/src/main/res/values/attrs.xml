@@ -4,4 +4,5 @@
     <attr name="editTextBackground" format="reference" />
     <attr name="quantityButtonBackground" format="reference" />
     <attr name="appLogo" format="reference" />
+    <attr name="separatorColor" format="color" /> <!-- NOVO ATRIBUTO -->
 </resources>

@@ -4,48 +4,55 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- HASTE DA TELA (Fica atrás) -->
-    <path
-        android:strokeColor="#000000"
-        android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:pathData="M12,6 v3" />
+    <!-- Grupo para aplicar o contorno verde e preenchimento branco em tudo -->
+    <group>
+        <!-- Base da Caixa Registradora com Gaveta -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:strokeColor="#22C55E"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M3,17 h18 v4 h-18 z M7,19 h10" />
 
-    <!-- TELA (Display) -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:strokeColor="#000000"
-        android:strokeWidth="2"
-        android:strokeLineJoin="round"
-        android:pathData="M8,3 h8 v4 h-8 z" />
+        <!-- Corpo Principal (Teclado) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:strokeColor="#22C55E"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M5,17 L7,8 h10 l2,9 z" />
 
-    <!-- BASE DA CAIXA -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:strokeColor="#000000"
-        android:strokeWidth="2"
-        android:strokeLineJoin="round"
-        android:pathData="M3,18 h18 a1,1 0 0,1 1,1 v2 a1,1 0 0,1 -1,1 h-18 a1,1 0 0,1 -1,-1 v-2 a1,1 0 0,1 1,-1 z" />
+        <!-- Detalhes do Teclado (Linhas internas) -->
+        <path
+            android:strokeColor="#22C55E"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:pathData="M9,11 h6 M9,14 h6" />
 
-    <!-- CORPO DA CAIXA (Verde) -->
-    <path
-        android:fillColor="#22C55E"
-        android:strokeColor="#000000"
-        android:strokeWidth="2"
-        android:strokeLineJoin="round"
-        android:pathData="M5,18 L7,9 a2,2 0 0,1 2,-1 h6 a2,2 0 0,1 2,1 l2,9 z" />
+        <!-- Haste e Tela (Display) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:strokeColor="#22C55E"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M10,8 v-2 M14,8 v-2 M8,3 h8 v3 h-8 z" />
 
-    <!-- DETALHES (Botões) -->
-    <!-- Botão Quadrado (Branco) -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M8,11 h3 v3 h-3 z" />
+        <!-- Conteúdo da Tela (Rabisco/Cifrão) -->
+        <path
+            android:strokeColor="#22C55E"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:pathData="M11,4.5 h2" />
 
-    <!-- Linhas/Botões Retangulares (Preto) -->
-    <path
-        android:strokeColor="#000000"
-        android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:pathData="M13.5,11.5 h3 M13.5,14.5 h3" />
-
+        <!-- Papel/Recibo no topo -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:strokeColor="#22C55E"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:pathData="M10,3 Q10,1 12,1 Q14,1 14,3" />
+    </group>
 </vector>

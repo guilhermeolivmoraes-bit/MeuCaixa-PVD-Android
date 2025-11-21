@@ -83,7 +83,7 @@ public class NewSaleFragment extends Fragment {
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchAdapter = new ProductSearchAdapter(new ArrayList<>(), product -> {
             addProductToCart(product);
-            editTextSearch.setText("");
+            editTextSearch.setText(""); 
             searchResultsRecyclerView.setVisibility(View.GONE);
         });
         searchResultsRecyclerView.setAdapter(searchAdapter);
@@ -114,6 +114,16 @@ public class NewSaleFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // CORREÇÃO: Gerencia a visibilidade dos componentes
+                boolean isSearching = s.length() > 0;
+                if (isSearching) {
+                    // Enquanto busca, esconde o carrinho e a tela de carrinho vazio
+                    cartRecyclerView.setVisibility(View.GONE);
+                    emptyCartView.setVisibility(View.GONE);
+                } else {
+                    // Quando a busca é limpa, mostra o carrinho ou a tela de vazio novamente
+                    updateCartVisibility();
+                }
                 newSaleViewModel.setSearchQuery(s.toString());
             }
 
@@ -126,7 +136,9 @@ public class NewSaleFragment extends Fragment {
         newSaleViewModel.searchResults.observe(getViewLifecycleOwner(), products -> {
             searchAdapter.setProducts(products);
             boolean hasResults = products != null && !products.isEmpty();
-            searchResultsRecyclerView.setVisibility(hasResults ? View.VISIBLE : View.GONE);
+            boolean isSearching = editTextSearch.getText().length() > 0;
+            // Só mostra os resultados se o usuário estiver de fato buscando
+            searchResultsRecyclerView.setVisibility(isSearching && hasResults ? View.VISIBLE : View.GONE);
         });
     }
 

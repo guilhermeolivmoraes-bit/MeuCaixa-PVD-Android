@@ -8,19 +8,21 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/black</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/gray_600</item>
 
         <!-- Atributos Customizados -->
         <item name="fabIconColor">@color/white</item>
         <item name="editTextBackground">@drawable/edit_text_background</item>
         <item name="quantityButtonBackground">@drawable/quantity_button_background</item>
         <item name="appLogo">@drawable/ic_logo_app</item>
+        <item name="separatorColor">@color/gray_300</item>
 
         <!-- Barra de Status -->
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <!-- Estilo do FAB -->
+    <!-- Estilo do FAB (RESTAURADO) -->
     <style name="MyFloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">@color/green_500</item>
         <item name="tint">?attr/fabIconColor</item>
@@ -28,7 +30,7 @@
         <item name="strokeWidth">2dp</item>
     </style>
 
-    <!-- Estilo: Botão Outlined Arredondado -->
+    <!-- Estilo: Botão Outlined Arredondado (RESTAURADO) -->
     <style name="Widget.App.Button.OutlinedButton.Rounded" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.Button.Rounded</item>
     </style>
@@ -38,11 +40,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <!-- CORREÇÃO: Estilos para a Barra de Navegação -->
-    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+    <!-- ESTILOS PARA A BARRA DE NAVEGAÇÃO -->
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
         <item name="itemIconTint">@color/bottom_nav_icon_color_selector</item>
         <item name="itemTextColor">@color/bottom_nav_icon_color_selector</item>
-        <item name="itemRippleColor">@color/green_100</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNavigationView.ActiveIndicator</item>
     </style>
 
