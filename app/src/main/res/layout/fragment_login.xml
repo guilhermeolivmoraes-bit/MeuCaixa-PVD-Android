@@ -7,92 +7,113 @@
     android:background="?attr/colorSurface"
     tools:context=".LoginFragment">
 
-    <!-- Título Principal -->
     <TextView
         android:id="@+id/text_title_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:text="Login"
         android:textColor="?attr/colorOnSurface"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="64dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Mensagem de Saudação -->
     <TextView
         android:id="@+id/text_greeting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
         android:textColor="?attr/colorOnSurface"
         android:textSize="24sp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/text_title_login"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_login"
         tools:text="Olá, Guilherme Oliveira" />
 
-    <!-- Campo Nome Completo -->
     <EditText
         android:id="@+id/edit_text_name_login"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:hint="Nome Completo"
-        android:inputType="textPersonName|textCapWords"
-        android:background="?attr/editTextBackground"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintTop_toBottomOf="@+id/text_greeting" 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="32dp"
-        android:paddingHorizontal="20dp"/>
+        android:background="?attr/editTextBackground"
+        android:hint="Nome Completo"
+        android:inputType="textPersonName|textCapWords"
+        android:paddingHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_greeting" />
 
-    <!-- CORREÇÃO: Campo de data agora está ancorado ao campo de nome -->
     <EditText
         android:id="@+id/edit_text_dob_login"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:hint="Data de Nascimento (DD/MM/AAAA)"
-        android:inputType="date"
-        android:background="?attr/editTextBackground"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_name_login" 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:paddingHorizontal="20dp"/>
+        android:background="?attr/editTextBackground"
+        android:hint="Data de Nascimento"
+        android:inputType="date"
+        android:paddingHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_name_login" />
 
-    <!-- Botão Principal de Login -->
+    <LinearLayout
+        android:id="@+id/signup_prompt_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/button_confirm_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NÃO TEM CONTA? "
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/button_signup_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="INSCREVA-SE"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/button_confirm_login"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:text="Entrar"
-        app:layout_constraintBottom_toTopOf="@+id/button_switch_user"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="64dp"
+        android:text="Entrar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Botão para Trocar de Usuário -->
     <Button
         android:id="@+id/button_switch_user"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
         android:text="Entrar com outro usuário"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorOnSurface"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_confirm_login"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="64dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

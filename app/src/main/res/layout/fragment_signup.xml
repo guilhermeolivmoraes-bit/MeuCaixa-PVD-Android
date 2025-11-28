@@ -39,7 +39,7 @@
         android:id="@+id/edit_text_dob_signup"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:hint="Data de Nascimento (DD/MM/AAAA)"
+        android:hint="Data de Nascimento"
         android:inputType="date"
         android:background="?attr/editTextBackground"
         android:textColor="?attr/colorOnSurface"

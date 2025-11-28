@@ -45,9 +45,12 @@
             app:destination="@id/main_app_nav_graph"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
 
-    <!-- Gráfico de Navegação Principal -->
+    <!-- Gráfico de Navegação Principal do App (só acessível após login) -->
     <navigation
         android:id="@+id/main_app_nav_graph"
         app:startDestination="@id/navigation_dashboard">
@@ -87,6 +90,7 @@
             android:label="Relatórios"
             tools:layout="@layout/fragment_reports" />
 
+        <!-- CORREÇÃO: Ações que foram apagadas, agora restauradas -->
         <action
             android:id="@+id/action_global_to_addEditProduct"
             app:destination="@id/addEditProductFragment" />
