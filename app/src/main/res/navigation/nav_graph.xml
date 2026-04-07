@@ -8,7 +8,7 @@
     <!-- Telas de Autenticação -->
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.oliveira.meucaixa.WelcomeFragment"
+        android:name="com.oliveira.meucaixa.ui.auth.WelcomeFragment"
         android:label="Bem-Vindo(a)"
         tools:layout="@layout/fragment_welcome">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.oliveira.meucaixa.SignUpFragment"
+        android:name="com.oliveira.meucaixa.ui.auth.SignUpFragment"
         android:label="Inscrever-se"
         tools:layout="@layout/fragment_signup">
         <action
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.oliveira.meucaixa.LoginFragment"
+        android:name="com.oliveira.meucaixa.ui.auth.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <argument
@@ -57,19 +57,19 @@
 
         <fragment
             android:id="@+id/navigation_dashboard"
-            android:name="com.oliveira.meucaixa.DashboardFragment"
+            android:name="com.oliveira.meucaixa.ui.dashboard.DashboardFragment"
             android:label="Início"
             tools:layout="@layout/fragment_dashboard" />
 
         <fragment
             android:id="@+id/navigation_products"
-            android:name="com.oliveira.meucaixa.ProductListFragment"
+            android:name="com.oliveira.meucaixa.ui.products.ProductListFragment"
             android:label="Meus Produtos"
             tools:layout="@layout/fragment_product_list" />
 
         <fragment
             android:id="@+id/addEditProductFragment"
-            android:name="com.oliveira.meucaixa.AddEditProductFragment"
+            android:name="com.oliveira.meucaixa.ui.products.AddEditProductFragment"
             android:label="Adicionar/Editar Produto"
             tools:layout="@layout/fragment_add_edit_product">
             <argument
@@ -80,13 +80,13 @@
 
         <fragment
             android:id="@+id/navigation_sale"
-            android:name="com.oliveira.meucaixa.NewSaleFragment"
+            android:name="com.oliveira.meucaixa.ui.sales.NewSaleFragment"
             android:label="Nova Venda"
             tools:layout="@layout/fragment_new_sale" />
 
         <fragment
             android:id="@+id/navigation_reports"
-            android:name="com.oliveira.meucaixa.ReportsFragment"
+            android:name="com.oliveira.meucaixa.ui.sales.ReportsFragment"
             android:label="Relatórios"
             tools:layout="@layout/fragment_reports" />
 
