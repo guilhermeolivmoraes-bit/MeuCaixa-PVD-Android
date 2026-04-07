@@ -40,7 +40,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
 
     public void deleteProduct(Product product) {
         executorService.execute(() -> {
-            product.setStock(0);
+            product.setStock(0.0);
             productDao.update(product);
         });
     }

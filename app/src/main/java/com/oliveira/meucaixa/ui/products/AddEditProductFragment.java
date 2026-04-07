@@ -84,7 +84,7 @@ public class AddEditProductFragment extends Fragment {
                     currentProduct = product;
                     editTextName.setText(product.getName());
                     editTextPrice.setText(String.format(new Locale("pt", "BR"), "%.2f", product.getPrice()));
-                    editTextStock.setText(String.valueOf(product.getStock()));
+                    editTextStock.setText(String.format(Locale.getDefault(), "%.2f", product.getStock()));
                     validateSaveButton();
                 }
             });
@@ -104,7 +104,7 @@ public class AddEditProductFragment extends Fragment {
         String stockStr = editTextStock.getText().toString().trim();
         boolean isStockValid = false;
         try {
-            int stock = Integer.parseInt(stockStr);
+            double stock = Double.parseDouble(stockStr);
             if (stock > 0) {
                 isStockValid = true;
             }
@@ -128,7 +128,7 @@ public class AddEditProductFragment extends Fragment {
 
         String priceAsNumber = priceStr.replaceAll("[^\\d]", "");
         double price = Double.parseDouble(priceAsNumber) / 100.0;
-        int stock = Integer.parseInt(stockStr);
+        double stock = Double.parseDouble(stockStr);
 
         if (currentProduct == null) {
             currentProduct = new Product();

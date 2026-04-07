@@ -28,9 +28,9 @@ public class SaleItem {
     private long productId;
     private String productName;
     private double productPrice;
-    private int quantity;
+    private double quantity;
 
-    public SaleItem(long saleId, long productId, String productName, double productPrice, int quantity) {
+    public SaleItem(long saleId, long productId, String productName, double productPrice, double quantity) {
         this.saleId = saleId;
         this.productId = productId;
         this.productName = productName;
@@ -47,6 +47,6 @@ public class SaleItem {
     public void setProductName(String productName) { this.productName = productName; }
     public double getProductPrice() { return productPrice; }
     public void setProductPrice(double productPrice) { this.productPrice = productPrice; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public double getQuantity() { return quantity; }
+    public void setQuantity(double quantity) { this.quantity = quantity; }
 }

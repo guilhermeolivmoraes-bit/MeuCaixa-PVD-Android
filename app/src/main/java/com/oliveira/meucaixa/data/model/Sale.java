@@ -22,8 +22,9 @@ public class Sale {
 
     private long date;
     private String productName;
-    private int quantity;
+    private double quantity;
     private double totalPrice;
+    private double totalCost;
 
     // Getters and Setters
 
@@ -59,11 +60,11 @@ public class Sale {
         this.productName = productName;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 
@@ -73,5 +74,13 @@ public class Sale {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
     }
 }

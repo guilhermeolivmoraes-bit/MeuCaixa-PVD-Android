@@ -10,12 +10,17 @@ import com.oliveira.meucaixa.data.model.Product;
 import com.oliveira.meucaixa.data.model.Sale;
 import com.oliveira.meucaixa.data.model.SaleItem;
 
-@Database(entities = {User.class, Product.class, Sale.class, SaleItem.class}, version = 6, exportSchema = false)
+import com.oliveira.meucaixa.data.model.Ingredient;
+import com.oliveira.meucaixa.data.model.ProductIngredient;
+
+@Database(entities = {User.class, Product.class, Sale.class, SaleItem.class, Ingredient.class, ProductIngredient.class}, version = 7, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
     public abstract ProductDao productDao();
     public abstract SaleDao saleDao();
+    public abstract IngredientDao ingredientDao();
+    public abstract ProductIngredientDao productIngredientDao();
 
     private static volatile AppDatabase INSTANCE;
 

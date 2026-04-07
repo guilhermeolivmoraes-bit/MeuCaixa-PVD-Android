@@ -69,7 +69,7 @@ public class NewSaleViewModel extends AndroidViewModel {
 
             for (CartItem item : cartItems) {
                 Product product = item.getProduct();
-                int newStock = product.getStock() - item.getQuantity();
+                double newStock = product.getStock() - item.getQuantity();
                 product.setStock(Math.max(0, newStock));
                 productDao.update(product);
             }

@@ -61,7 +61,7 @@ public class ProductSearchAdapter extends RecyclerView.Adapter<ProductSearchAdap
 
         public void bind(final Product product, final OnProductClickListener listener) {
             name.setText(product.getName());
-            stock.setText(String.format(Locale.getDefault(), "Estoque: %d", product.getStock()));
+            stock.setText(String.format(Locale.getDefault(), "Estoque: %.2f", product.getStock()));
             price.setText(String.format(Locale.getDefault(), "R$ %.2f", product.getPrice()));
             itemView.setOnClickListener(v -> listener.onProductClick(product));
         }

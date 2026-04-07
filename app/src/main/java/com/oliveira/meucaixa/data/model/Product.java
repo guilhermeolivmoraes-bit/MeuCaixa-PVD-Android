@@ -27,7 +27,16 @@ public class Product {
     private double price;
 
     @ColumnInfo(name = "product_stock")
-    private int stock;
+    private double stock;
+
+    @ColumnInfo(name = "unit_type")
+    private String unitType;
+
+    @ColumnInfo(name = "is_own_production")
+    private boolean isOwnProduction;
+
+    @ColumnInfo(name = "cost_price")
+    private double costPrice;
 
     // Getters and Setters
 
@@ -63,11 +72,35 @@ public class Product {
         this.price = price;
     }
 
-    public int getStock() {
+    public double getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(double stock) {
         this.stock = stock;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
+    }
+
+    public boolean isOwnProduction() {
+        return isOwnProduction;
+    }
+
+    public void setOwnProduction(boolean ownProduction) {
+        isOwnProduction = ownProduction;
+    }
+
+    public double getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(double costPrice) {
+        this.costPrice = costPrice;
     }
 }
