@@ -46,7 +46,7 @@ public class NewSaleViewModel extends AndroidViewModel {
 
         searchResults = Transformations.switchMap(searchQuery, query -> {
             if (query == null || query.trim().isEmpty()) {
-                return new MutableLiveData<>(new ArrayList<>());
+                return productDao.getAll(userId);
             }
             return productDao.searchByName(userId, "%" + query + "%");
         });

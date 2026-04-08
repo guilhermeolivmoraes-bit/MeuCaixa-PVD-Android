@@ -99,8 +99,8 @@ public class AddEditProductFragment extends Fragment {
         buttonDelete.setOnClickListener(v -> deleteProduct());
         
         buttonManageIngredients.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "BottomSheet de ingredientes será aberto aqui", Toast.LENGTH_SHORT).show();
-            // TODO: Implement bottom sheet fragment showing ingredient selection
+            RecipeIngredientsBottomSheet bottomSheet = RecipeIngredientsBottomSheet.newInstance();
+            bottomSheet.show(getChildFragmentManager(), "RecipeBottomSheet");
         });
 
         setupDynamicToggles();
@@ -151,14 +151,17 @@ public class AddEditProductFragment extends Fragment {
     private void populateFields(Product product) {
         editTextName.setText(product.getName());
         editTextPrice.setText(String.format(new Locale("pt", "BR"), "%.2f", product.getPrice()));
-        editTextStock.setText(String.format(Locale.getDefault(), "%.2f", product.getStock()));
         editTextCostPrice.setText(String.format(new Locale("pt", "BR"), "%.2f", product.getCostPrice()));
         
         switchOwnProduction.setChecked(product.isOwnProduction());
         if(product.getUnitType() != null && product.getUnitType().equals("kg/g")) {
             radioGroupUnitType.check(R.id.radio_peso);
+            editTextStock.setText(String.format(Locale.getDefault(), "%.2f", product.getStock()));
         } else {
             radioGroupUnitType.check(R.id.radio_unidade);
+            // Mostrar como número inteiro se for unidade
+            long isInt = (long) product.getStock();
+            editTextStock.setText(String.valueOf(isInt));
         }
     }
 

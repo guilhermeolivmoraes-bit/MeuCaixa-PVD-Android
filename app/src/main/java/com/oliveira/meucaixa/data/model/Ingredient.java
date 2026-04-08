@@ -1,13 +1,24 @@
 package com.oliveira.meucaixa.data.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "ingredients")
+@Entity(tableName = "ingredients",
+        foreignKeys = @ForeignKey(entity = User.class,
+                                  parentColumns = "id",
+                                  childColumns = "user_id",
+                                  onDelete = ForeignKey.CASCADE),
+        indices = {@Index(value = {"user_id"})})
 public class Ingredient {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
+
+    @ColumnInfo(name = "user_id")
+    private long userId;
 
     private String name;
     private double packagePrice;
@@ -22,6 +33,14 @@ public class Ingredient {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getName() {

@@ -13,7 +13,7 @@ import com.oliveira.meucaixa.data.model.SaleItem;
 import com.oliveira.meucaixa.data.model.Ingredient;
 import com.oliveira.meucaixa.data.model.ProductIngredient;
 
-@Database(entities = {User.class, Product.class, Sale.class, SaleItem.class, Ingredient.class, ProductIngredient.class}, version = 7, exportSchema = false)
+@Database(entities = {User.class, Product.class, Sale.class, SaleItem.class, Ingredient.class, ProductIngredient.class}, version = 8, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();

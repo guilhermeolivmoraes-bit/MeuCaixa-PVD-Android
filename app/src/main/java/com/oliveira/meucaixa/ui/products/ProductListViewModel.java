@@ -30,6 +30,6 @@ public class ProductListViewModel extends AndroidViewModel {
     }
     
     public LiveData<java.util.List<com.oliveira.meucaixa.data.model.Ingredient>> getAllIngredients() {
-        return ingredientDao.getAllIngredients();
+        return ingredientDao.getAllIngredients(userId);
     }
 }

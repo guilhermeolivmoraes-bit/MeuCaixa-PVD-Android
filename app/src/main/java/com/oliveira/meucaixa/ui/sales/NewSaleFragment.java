@@ -77,7 +77,7 @@ public class NewSaleFragment extends Fragment {
 
     private void setupRecyclerViewCart() {
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        cartAdapter = new CartAdapter(newSaleViewModel.getCartItemsAsList(), new CartAdapter.OnCartItemChangeListener() {
+        cartAdapter = new CartAdapter(newSaleViewModel.getCartItemsAsList(), new CartAdapter.OnSaleItemChangeListener() {
             @Override
             public void onItemQuantityChanged() {
                 // CartAdapter modifies the item object directly via views (temporary setup).
@@ -154,7 +154,7 @@ public class NewSaleFragment extends Fragment {
     private void updateCartUI() {
         List<com.oliveira.meucaixa.data.model.SaleItem> currentItems = newSaleViewModel.getCartItemsAsList();
         
-        cartAdapter = new CartAdapter(currentItems, new CartAdapter.OnCartItemChangeListener() {
+        cartAdapter = new CartAdapter(currentItems, new CartAdapter.OnSaleItemChangeListener() {
             @Override
             public void onItemQuantityChanged() {
                 updateCartUI();

@@ -1,6 +1,7 @@
 package com.oliveira.meucaixa.ui.sales;
 
 import com.oliveira.meucaixa.R;
+import com.oliveira.meucaixa.data.model.SaleItem;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +18,16 @@ import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
-    private final List<CartItem> saleItems;
-    private final OnCartItemChangeListener listener;
+    private final List<SaleItem> saleItems;
+    private final OnSaleItemChangeListener listener;
 
-    public interface OnCartItemChangeListener {
+    public interface OnSaleItemChangeListener {
         void onItemQuantityChanged();
+
         void onItemDeleted(int position);
     }
 
-    public CartAdapter(List<CartItem> saleItems, OnCartItemChangeListener listener) {
+    public CartAdapter(List<SaleItem> saleItems, OnSaleItemChangeListener listener) {
         this.saleItems = saleItems;
         this.listener = listener;
     }
@@ -39,7 +41,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CartItem saleItem = saleItems.get(position);
+        SaleItem saleItem = saleItems.get(position);
         holder.bind(saleItem);
     }
 
@@ -51,9 +53,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name, quantity, totalPrice;
         private final ImageButton decrease, increase, delete;
-        private final OnCartItemChangeListener listener;
+        private final OnSaleItemChangeListener listener;
 
-        public ViewHolder(@NonNull View itemView, OnCartItemChangeListener listener) {
+        public ViewHolder(@NonNull View itemView, OnSaleItemChangeListener listener) {
             super(itemView);
             this.listener = listener;
             name = itemView.findViewById(R.id.text_cart_item_name);
@@ -64,18 +66,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             delete = itemView.findViewById(R.id.button_delete_item);
         }
 
-        public void bind(final CartItem saleItem) {
-            name.setText(saleItem.getProduct().getName());
-            quantity.setText(String.valueOf(saleItem.getQuantity()));
-            totalPrice.setText(String.format(Locale.getDefault(), "R$ %.2f", saleItem.getTotalPrice()));
+        public void bind(final SaleItem saleItem) {
+            name.setText(saleItem.getProductName());
+
+            double q = saleItem.getQuantity();
+            if (q == Math.floor(q)) {
+                quantity.setText(String.valueOf((long) q));
+            } else {
+                quantity.setText(String.format(Locale.getDefault(), "%.3f", q));
+            }
+            totalPrice.setText(String.format(Locale.getDefault(), "R$ %.2f", saleItem.getProductPrice() * saleItem.getQuantity()));
 
             increase.setOnClickListener(v -> {
-                if (saleItem.getQuantity() < saleItem.getProduct().getStock()) {
-                    saleItem.setQuantity(saleItem.getQuantity() + 1);
-                    listener.onItemQuantityChanged();
-                } else {
-                    Toast.makeText(itemView.getContext(), "Estoque máximo atingido", Toast.LENGTH_SHORT).show();
-                }
+                saleItem.setQuantity(saleItem.getQuantity() + 1);
+                listener.onItemQuantityChanged();
             });
 
             decrease.setOnClickListener(v -> {

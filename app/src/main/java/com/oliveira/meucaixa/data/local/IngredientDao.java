@@ -23,8 +23,8 @@ public interface IngredientDao {
     @Delete
     void delete(Ingredient ingredient);
 
-    @Query("SELECT * FROM ingredients ORDER BY name ASC")
-    LiveData<List<Ingredient>> getAllIngredients();
+    @Query("SELECT * FROM ingredients WHERE user_id = :userId ORDER BY name ASC")
+    LiveData<List<Ingredient>> getAllIngredients(long userId);
 
     @Query("SELECT * FROM ingredients WHERE id = :id")
     Ingredient getIngredientById(long id);
