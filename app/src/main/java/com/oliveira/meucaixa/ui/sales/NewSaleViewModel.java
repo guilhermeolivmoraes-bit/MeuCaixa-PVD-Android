@@ -14,8 +14,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,6 +30,9 @@ public class NewSaleViewModel extends AndroidViewModel {
 
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>();
     public final LiveData<List<Product>> searchResults;
+
+    // O(1) performance Map for Cart Items (Key: productId)
+    private final Map<Long, SaleItem> cartMap = new HashMap<>();
 
     public NewSaleViewModel(@NonNull Application application) {
         super(application);
@@ -50,29 +56,63 @@ public class NewSaleViewModel extends AndroidViewModel {
         searchQuery.setValue(query);
     }
 
-    public void saveCompleteSale(List<CartItem> cartItems, double totalValue) {
+    public void addItemToCart(Product product, double quantity) {
+        long productId = product.getId();
+        if (cartMap.containsKey(productId)) {
+            SaleItem existingItem = cartMap.get(productId);
+            if (existingItem != null) {
+                existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            }
+        } else {
+            SaleItem newItem = new SaleItem(0L, productId, product.getName(), product.getPrice(), quantity);
+            cartMap.put(productId, newItem);
+        }
+    }
+
+    public void removeItemFromCart(long productId) {
+        cartMap.remove(productId);
+    }
+
+    public void updateItemQuantity(long productId, double newQuantity) {
+        if (cartMap.containsKey(productId)) {
+            SaleItem item = cartMap.get(productId);
+            if (item != null) {
+                if (newQuantity <= 0) {
+                    cartMap.remove(productId);
+                } else {
+                    item.setQuantity(newQuantity);
+                }
+            }
+        }
+    }
+
+    public List<SaleItem> getCartItemsAsList() {
+        return new ArrayList<>(cartMap.values());
+    }
+
+    public void saveCompleteSale(double totalValue, double totalCost) {
         databaseExecutor.execute(() -> {
             Sale newSale = new Sale();
             newSale.setUserId(userId);
             newSale.setTotalPrice(totalValue);
+            newSale.setTotalCost(totalCost);
             newSale.setDate(System.currentTimeMillis());
 
-            List<SaleItem> itemsToSave = new ArrayList<>();
-            for (CartItem cartItem : cartItems) {
-                if (newSale.getProductName() == null) {
-                    newSale.setProductName(cartItem.getProduct().getName());
-                    newSale.setQuantity(cartItem.getQuantity());
-                }
-                itemsToSave.add(new SaleItem(0, cartItem.getProduct().getId(), cartItem.getProduct().getName(), cartItem.getProduct().getPrice(), cartItem.getQuantity()));
-            }
+            List<SaleItem> itemsToSave = getCartItemsAsList();
             saleDao.saveCompleteSale(newSale, itemsToSave);
 
-            for (CartItem item : cartItems) {
-                Product product = item.getProduct();
-                double newStock = product.getStock() - item.getQuantity();
-                product.setStock(Math.max(0, newStock));
-                productDao.update(product);
+            for (SaleItem item : itemsToSave) {
+                // To safely retrieve stock and subtract, we rely on the object given in the item or Dao
+                // Real production often relies on a proper UPDATE setting stock = stock - quantity via SQL
+                Product product = productDao.getByIdSynchronous(item.getProductId(), userId); 
+                if (product != null) {
+                    double newStock = product.getStock() - item.getQuantity();
+                    product.setStock(Math.max(0, newStock));
+                    productDao.update(product);
+                }
             }
+            // Clear cart map after save
+            cartMap.clear();
         });
     }
 }

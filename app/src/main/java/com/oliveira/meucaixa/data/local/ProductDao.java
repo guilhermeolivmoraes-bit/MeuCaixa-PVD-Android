@@ -21,6 +21,9 @@ public interface ProductDao {
     LiveData<List<Product>> searchByName(long userId, String query);
 
     @Query("SELECT * FROM products WHERE id = :id AND user_id = :userId LIMIT 1")
+    Product getByIdSynchronous(long id, long userId);
+
+    @Query("SELECT * FROM products WHERE id = :id AND user_id = :userId LIMIT 1")
     LiveData<Product> getById(long id, long userId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

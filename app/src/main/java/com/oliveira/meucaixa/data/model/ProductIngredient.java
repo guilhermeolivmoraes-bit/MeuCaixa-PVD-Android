@@ -57,4 +57,17 @@ public class ProductIngredient {
     public void setQuantityUsed(double quantityUsed) {
         this.quantityUsed = quantityUsed;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductIngredient that = (ProductIngredient) o;
+        return ingredientId == that.ingredientId;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(ingredientId);
+    }
 }
