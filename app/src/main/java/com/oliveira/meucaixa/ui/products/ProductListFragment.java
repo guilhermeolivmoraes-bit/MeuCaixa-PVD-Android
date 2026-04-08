@@ -16,6 +16,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
@@ -23,9 +25,15 @@ public class ProductListFragment extends Fragment {
 
     private ProductListViewModel productListViewModel;
     private ProductAdapter productAdapter;
+    private IngredientAdapter ingredientAdapter;
+    
     private NavController navController;
     private TextView textProductCount, textTitle;
     private RecyclerView recyclerView;
+    private ChipGroup chipGroupFilters;
+    private FloatingActionButton fab;
+    
+    private boolean isShowingIngredients = false;
 
     @Nullable
     @Override
@@ -38,29 +46,88 @@ public class ProductListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         navController = Navigation.findNavController(view);
+        productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
 
         textTitle = view.findViewById(R.id.text_title);
         textProductCount = view.findViewById(R.id.text_product_count);
         recyclerView = view.findViewById(R.id.recycler_view_products);
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_product);
+        chipGroupFilters = view.findViewById(R.id.chip_group_filters);
+        fab = view.findViewById(R.id.fab_add_product);
 
+        setupRecyclerView();
+        setupChips();
+        observeData();
+    }
+
+    private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        
         productAdapter = new ProductAdapter(new ArrayList<>(), product -> {
             Bundle bundle = new Bundle();
             bundle.putLong("productId", product.getId());
             navController.navigate(R.id.action_global_to_addEditProduct, bundle);
         });
-        recyclerView.setAdapter(productAdapter);
+        
+        ingredientAdapter = new IngredientAdapter(new ArrayList<>(), ingredient -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong("ingredientId", ingredient.getId());
+            navController.navigate(R.id.action_global_to_addEditIngredient, bundle);
+        });
 
-        productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
+        // initial state
+        recyclerView.setAdapter(productAdapter);
+        setupFab(R.id.action_global_to_addEditProduct);
+    }
+
+    private void setupChips() {
+        chipGroupFilters.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.isEmpty()) return;
+            
+            int checkedId = checkedIds.get(0);
+            if (checkedId == R.id.chip_ingredients) {
+                isShowingIngredients = true;
+                recyclerView.setAdapter(ingredientAdapter);
+                textTitle.setText("Meus Insumos");
+                setupFab(R.id.action_global_to_addEditIngredient);
+            } else {
+                isShowingIngredients = false;
+                recyclerView.setAdapter(productAdapter);
+                textTitle.setText("Meus Produtos");
+                setupFab(R.id.action_global_to_addEditProduct);
+            }
+            updateCountText();
+        });
+    }
+    
+    private void setupFab(int actionId) {
+        fab.setOnClickListener(v -> navController.navigate(actionId));
+    }
+
+    private void observeData() {
         productListViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
             productAdapter.setProducts(products);
-            textProductCount.setText(String.format("%d produto(s)", products.size()));
-            recyclerView.setVisibility(products.isEmpty() ? View.GONE : View.VISIBLE);
+            if (!isShowingIngredients) {
+                updateCountText();
+                recyclerView.setVisibility(products.isEmpty() ? View.GONE : View.VISIBLE);
+            }
         });
-
-        fab.setOnClickListener(v -> {
-            navController.navigate(R.id.action_global_to_addEditProduct);
+        
+        productListViewModel.getAllIngredients().observe(getViewLifecycleOwner(), ingredients -> {
+            ingredientAdapter.setIngredients(ingredients);
+            if (isShowingIngredients) {
+                updateCountText();
+                recyclerView.setVisibility(ingredients.isEmpty() ? View.GONE : View.VISIBLE);
+            }
         });
+    }
+    
+    private void updateCountText() {
+        if (isShowingIngredients) {
+            int size = ingredientAdapter.getItemCount();
+            textProductCount.setText(String.format("%d insumo(s)", size));
+        } else {
+            int size = productAdapter.getItemCount();
+            textProductCount.setText(String.format("%d produto(s)", size));
+        }
     }
 }

@@ -2,11 +2,8 @@ package com.oliveira.meucaixa.ui.sales;
 
 import com.oliveira.meucaixa.R;
 import com.oliveira.meucaixa.data.model.Product;
-import com.oliveira.meucaixa.ui.products.ProductSearchAdapter;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +24,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,17 +33,13 @@ public class NewSaleFragment extends Fragment {
     private NavController navController;
 
     private EditText editTextSearch;
-    private RecyclerView searchResultsRecyclerView;
     private RecyclerView cartRecyclerView;
     private LinearLayout emptyCartView;
 
-    private ProductSearchAdapter searchAdapter;
     private CartAdapter cartAdapter;
 
     private TextView textTotalValue;
     private Button buttonFinalizeSale;
-
-    private final List<CartItem> cartItems = new ArrayList<>();
 
     @Nullable
     @Override
@@ -63,15 +55,15 @@ public class NewSaleFragment extends Fragment {
         newSaleViewModel = new ViewModelProvider(this).get(NewSaleViewModel.class);
 
         bindViews(view);
-        setupRecyclerViews();
-        setupSearch();
-        observeSearchResults();
-        updateCartVisibility();
+        setupRecyclerViewCart();
+        setupFakeSearch();
+        setupFragmentResultListener();
+        
+        updateCartUI();
     }
 
     private void bindViews(View view) {
         editTextSearch = view.findViewById(R.id.edit_text_search);
-        searchResultsRecyclerView = view.findViewById(R.id.recycler_view_search_results);
         cartRecyclerView = view.findViewById(R.id.recycler_view_cart);
         emptyCartView = view.findViewById(R.id.empty_cart_view);
         textTotalValue = view.findViewById(R.id.text_total_value);
@@ -83,119 +75,103 @@ public class NewSaleFragment extends Fragment {
         buttonFinalizeSale.setOnClickListener(v -> finalizeSale());
     }
 
-    private void setupRecyclerViews() {
-        searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        searchAdapter = new ProductSearchAdapter(new ArrayList<>(), product -> {
-            addProductToCart(product);
-            editTextSearch.setText(""); 
-            searchResultsRecyclerView.setVisibility(View.GONE);
-        });
-        searchResultsRecyclerView.setAdapter(searchAdapter);
-
+    private void setupRecyclerViewCart() {
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        cartAdapter = new CartAdapter(cartItems, new CartAdapter.OnCartItemChangeListener() {
+        cartAdapter = new CartAdapter(newSaleViewModel.getCartItemsAsList(), new CartAdapter.OnCartItemChangeListener() {
             @Override
             public void onItemQuantityChanged() {
-                cartAdapter.notifyDataSetChanged();
-                updateTotal();
+                // CartAdapter modifies the item object directly via views (temporary setup).
+                // We just refresh UI.
+                updateCartUI();
             }
 
             @Override
             public void onItemDeleted(int position) {
-                cartItems.remove(position);
-                cartAdapter.notifyItemRemoved(position);
-                updateTotal();
-                updateCartVisibility();
+                List<com.oliveira.meucaixa.data.model.SaleItem> items = newSaleViewModel.getCartItemsAsList();
+                if (position >= 0 && position < items.size()) {
+                    long productId = items.get(position).getProductId();
+                    newSaleViewModel.removeItemFromCart(productId);
+                }
+                updateCartUI();
             }
         });
         cartRecyclerView.setAdapter(cartAdapter);
     }
 
-    private void setupSearch() {
-        editTextSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // CORREÇÃO: Gerencia a visibilidade dos componentes
-                boolean isSearching = s.length() > 0;
-                if (isSearching) {
-                    // Enquanto busca, esconde o carrinho e a tela de carrinho vazio
-                    cartRecyclerView.setVisibility(View.GONE);
-                    emptyCartView.setVisibility(View.GONE);
-                } else {
-                    // Quando a busca é limpa, mostra o carrinho ou a tela de vazio novamente
-                    updateCartVisibility();
-                }
-                newSaleViewModel.setSearchQuery(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+    private void setupFakeSearch() {
+        editTextSearch.setOnClickListener(v -> {
+            navController.navigate(R.id.action_newSale_to_productSearch);
         });
     }
 
-    private void observeSearchResults() {
-        newSaleViewModel.searchResults.observe(getViewLifecycleOwner(), products -> {
-            searchAdapter.setProducts(products);
-            boolean hasResults = products != null && !products.isEmpty();
-            boolean isSearching = editTextSearch.getText().length() > 0;
-            // Só mostra os resultados se o usuário estiver de fato buscando
-            searchResultsRecyclerView.setVisibility(isSearching && hasResults ? View.VISIBLE : View.GONE);
+    private void setupFragmentResultListener() {
+        getParentFragmentManager().setFragmentResultListener("sale_product_req", getViewLifecycleOwner(), (requestKey, result) -> {
+            long productId = result.getLong("productId", -1L);
+            if (productId != -1L) {
+                // Fetch the product from LiveData and add to cart when observed. 
+                // Since this is a temporary observing just to add, we observe it once:
+                newSaleViewModel.getProductById(productId).observe(getViewLifecycleOwner(), product -> {
+                    if (product != null) {
+                        addProductToCart(product);
+                        // Prevent observing continuously
+                        newSaleViewModel.getProductById(productId).removeObservers(getViewLifecycleOwner());
+                    }
+                });
+            }
         });
     }
 
     private void addProductToCart(Product product) {
-        for (CartItem item : cartItems) {
-            if (item.getProduct().getId() == product.getId()) {
-                if (item.getQuantity() < product.getStock()) {
-                    item.setQuantity(item.getQuantity() + 1);
-                    cartAdapter.notifyDataSetChanged();
-                    updateTotal();
-                } else {
-                    Toast.makeText(getContext(), "Estoque máximo atingido", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-        }
-
         if (product.getStock() > 0) {
-            cartItems.add(new CartItem(product, 1));
-            cartAdapter.notifyDataSetChanged();
-            updateTotal();
-            updateCartVisibility();
+            newSaleViewModel.addItemToCart(product, 1.0);
+            updateCartUI();
         } else {
-            Toast.makeText(getContext(), "Produto sem estoque", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Product out of stock", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void finalizeSale() {
-        if (cartItems.isEmpty()) {
+        List<com.oliveira.meucaixa.data.model.SaleItem> items = newSaleViewModel.getCartItemsAsList();
+        if (items.isEmpty()) {
             Toast.makeText(getContext(), "O carrinho está vazio", Toast.LENGTH_SHORT).show();
             return;
         }
 
         double totalValue = 0;
-        for (CartItem item : cartItems) {
-            totalValue += item.getTotalPrice();
+        double totalCost = 0; // Assuming we would calculate this based on Product's costPrice.
+        
+        // As a simplification due to the transition, we calculate total price here.
+        for (com.oliveira.meucaixa.data.model.SaleItem item : items) {
+            totalValue += (item.getProductPrice() * item.getQuantity());
+            // Optionally, accumulate total cost if available.
         }
 
-        newSaleViewModel.saveCompleteSale(cartItems, totalValue);
+        newSaleViewModel.saveCompleteSale(totalValue, totalCost);
         Toast.makeText(getContext(), "Venda salva com sucesso!", Toast.LENGTH_SHORT).show();
         navController.popBackStack();
     }
 
-    private void updateTotal() {
-        double total = 0;
-        for (CartItem item : cartItems) {
-            total += item.getTotalPrice();
-        }
-        textTotalValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
-    }
+    private void updateCartUI() {
+        List<com.oliveira.meucaixa.data.model.SaleItem> currentItems = newSaleViewModel.getCartItemsAsList();
+        
+        cartAdapter = new CartAdapter(currentItems, new CartAdapter.OnCartItemChangeListener() {
+            @Override
+            public void onItemQuantityChanged() {
+                updateCartUI();
+            }
 
-    private void updateCartVisibility() {
-        boolean isCartEmpty = cartItems.isEmpty();
+            @Override
+            public void onItemDeleted(int position) {
+                if (position >= 0 && position < currentItems.size()) {
+                    long productId = currentItems.get(position).getProductId();
+                    newSaleViewModel.removeItemFromCart(productId);
+                }
+                updateCartUI();
+            }
+        });
+        cartRecyclerView.setAdapter(cartAdapter);
+
+        boolean isCartEmpty = currentItems.isEmpty();
         emptyCartView.setVisibility(isCartEmpty ? View.VISIBLE : View.GONE);
         cartRecyclerView.setVisibility(isCartEmpty ? View.GONE : View.VISIBLE);
 
@@ -209,5 +185,11 @@ public class NewSaleFragment extends Fragment {
                     : ContextCompat.getColor(getContext(), R.color.white);
             buttonFinalizeSale.setTextColor(textColor);
         }
+
+        double total = 0;
+        for (com.oliveira.meucaixa.data.model.SaleItem item : currentItems) {
+            total += (item.getProductPrice() * item.getQuantity());
+        }
+        textTotalValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
     }
 }

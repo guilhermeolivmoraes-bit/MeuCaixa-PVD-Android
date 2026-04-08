@@ -82,7 +82,28 @@
             android:id="@+id/navigation_sale"
             android:name="com.oliveira.meucaixa.ui.sales.NewSaleFragment"
             android:label="Nova Venda"
-            tools:layout="@layout/fragment_new_sale" />
+            tools:layout="@layout/fragment_new_sale">
+            <action
+                android:id="@+id/action_newSale_to_productSearch"
+                app:destination="@id/productSearchFragment" />
+        </fragment>
+        
+        <fragment
+            android:id="@+id/productSearchFragment"
+            android:name="com.oliveira.meucaixa.ui.products.ProductSearchFragment"
+            android:label="Buscar Produto"
+            tools:layout="@layout/fragment_product_search" />
+            
+        <fragment
+            android:id="@+id/addEditIngredientFragment"
+            android:name="com.oliveira.meucaixa.ui.products.AddEditIngredientFragment"
+            android:label="Adicionar/Editar Insumo"
+            tools:layout="@layout/fragment_add_edit_ingredient">
+            <argument
+                android:name="ingredientId"
+                app:argType="long"
+                android:defaultValue="-1L" />
+        </fragment>
 
         <fragment
             android:id="@+id/navigation_reports"
@@ -94,6 +115,10 @@
         <action
             android:id="@+id/action_global_to_addEditProduct"
             app:destination="@id/addEditProductFragment" />
+            
+        <action
+            android:id="@+id/action_global_to_addEditIngredient"
+            app:destination="@id/addEditIngredientFragment" />
 
         <action
             android:id="@+id/action_main_app_to_dashboard"

@@ -90,6 +90,10 @@ public class NewSaleViewModel extends AndroidViewModel {
         return new ArrayList<>(cartMap.values());
     }
 
+    public LiveData<Product> getProductById(long productId) {
+        return productDao.getById(productId, userId);
+    }
+
     public void saveCompleteSale(double totalValue, double totalCost) {
         databaseExecutor.execute(() -> {
             Sale newSale = new Sale();
