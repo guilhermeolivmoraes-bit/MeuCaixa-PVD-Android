@@ -104,43 +104,44 @@ public class NewSaleViewModel extends AndroidViewModel {
 
     public void saveCompleteSale(double totalValue, double totalCost) {
         databaseExecutor.execute(() -> {
-            Sale newSale = new Sale();
-            newSale.setUserId(userId);
-            newSale.setTotalPrice(totalValue);
-            newSale.setTotalCost(totalCost);
-            newSale.setDate(System.currentTimeMillis());
+            AppDatabase db = AppDatabase.getDatabase(getApplication());
+            db.runInTransaction(() -> {
+                Sale newSale = new Sale();
+                newSale.setUserId(userId);
+                newSale.setTotalPrice(totalValue);
+                newSale.setTotalCost(totalCost);
+                newSale.setDate(System.currentTimeMillis());
 
-            List<SaleItem> itemsToSave = getCartItemsAsList();
-            saleDao.saveCompleteSale(newSale, itemsToSave);
+                List<SaleItem> itemsToSave = getCartItemsAsList();
+                saleDao.saveCompleteSale(newSale, itemsToSave);
 
-            for (SaleItem item : itemsToSave) {
-                // To safely retrieve stock and subtract, we rely on the object given in the item or Dao
-                // Real production often relies on a proper UPDATE setting stock = stock - quantity via SQL
-                Product product = productDao.getByIdSynchronous(item.getProductId(), userId); 
-                if (product != null) {
-                    if (product.isOwnProduction()) {
-                        // Cascade deduction from the ingredients recipe
-                        List<ProductIngredient> recipe = productIngredientDao.getIngredientsForProductSynchronous(product.getId());
-                        if (recipe != null) {
-                            for (ProductIngredient pi : recipe) {
-                                Ingredient ingredient = ingredientDao.getIngredientById(pi.getIngredientId());
-                                if (ingredient != null) {
-                                    double deduction = pi.getQuantityUsed() * item.getQuantity();
-                                    double newStock = ingredient.getCurrentStock() - deduction;
-                                    ingredient.setCurrentStock(Math.max(0, newStock));
-                                    ingredientDao.update(ingredient);
+                for (SaleItem item : itemsToSave) {
+                    Product product = productDao.getByIdSynchronous(item.getProductId(), userId);
+                    if (product != null) {
+                        if (product.isOwnProduction()) {
+                            // Cascade deduction from the ingredients recipe
+                            List<ProductIngredient> recipe = productIngredientDao.getIngredientsForProductSynchronous(product.getId());
+                            if (recipe != null) {
+                                for (ProductIngredient pi : recipe) {
+                                    Ingredient ingredient = ingredientDao.getIngredientById(pi.getIngredientId());
+                                    if (ingredient != null) {
+                                        double deduction = pi.getQuantityUsed() * item.getQuantity();
+                                        double newStock = ingredient.getCurrentStock() - deduction;
+                                        ingredient.setCurrentStock(Math.max(0, newStock));
+                                        ingredientDao.update(ingredient);
+                                    }
                                 }
                             }
+                        } else {
+                            // Standard physical product deduction
+                            double newStock = product.getStock() - item.getQuantity();
+                            product.setStock(Math.max(0, newStock));
+                            productDao.update(product);
                         }
-                    } else {
-                        // Standard physical product deduction
-                        double newStock = product.getStock() - item.getQuantity();
-                        product.setStock(Math.max(0, newStock));
-                        productDao.update(product);
                     }
                 }
-            }
-            // Clear cart map after save
+            });
+            // Clear cart map after save (outside transaction to update UI properly if observed)
             cartMap.clear();
         });
     }
