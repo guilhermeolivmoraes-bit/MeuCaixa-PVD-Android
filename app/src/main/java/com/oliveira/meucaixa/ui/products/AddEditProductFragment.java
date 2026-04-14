@@ -56,7 +56,7 @@ public class AddEditProductFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         navController = Navigation.findNavController(view);
-        addEditProductViewModel = new ViewModelProvider(this).get(AddEditProductViewModel.class);
+        addEditProductViewModel = new ViewModelProvider(requireActivity()).get(AddEditProductViewModel.class);
 
         bindViews(view);
         setupListeners();
@@ -127,6 +127,8 @@ public class AddEditProductFragment extends Fragment {
     }
 
     private void setupInitialState() {
+        addEditProductViewModel.clearRecipeIngredients();
+        
         if (getArguments() != null) {
             productId = getArguments().getLong("productId", -1L);
         }
@@ -140,6 +142,10 @@ public class AddEditProductFragment extends Fragment {
                     populateFields(product);
                     validateSaveButton();
                 }
+            });
+            // Carregar ingredientes para evitar deletá-los ao salvar
+            addEditProductViewModel.getIngredientsForProduct(productId).observe(getViewLifecycleOwner(), ingredients -> {
+                addEditProductViewModel.loadRecipe(ingredients);
             });
         } else {
             textTitle.setText("Cadastrar Produto");

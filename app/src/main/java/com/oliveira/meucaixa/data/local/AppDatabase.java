@@ -15,7 +15,7 @@ import com.oliveira.meucaixa.data.model.SaleItem;
 import com.oliveira.meucaixa.data.model.Ingredient;
 import com.oliveira.meucaixa.data.model.ProductIngredient;
 
-@Database(entities = {User.class, Product.class, Sale.class, SaleItem.class, Ingredient.class, ProductIngredient.class}, version = 10, exportSchema = false)
+@Database(entities = {User.class, Product.class, Sale.class, SaleItem.class, Ingredient.class, ProductIngredient.class}, version = 11, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
@@ -33,6 +33,13 @@ public abstract class AppDatabase extends RoomDatabase {
             database.execSQL("ALTER TABLE ingredients ADD COLUMN current_stock REAL NOT NULL DEFAULT 0.0");
         }
     };
+    
+    static final Migration MIGRATION_10_11 = new Migration(10, 11) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE sale_items ADD COLUMN costPrice REAL NOT NULL DEFAULT 0.0");
+        }
+    };
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -40,7 +47,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "meu_caixa_database")
-                            .addMigrations(MIGRATION_9_10)
+                            .addMigrations(MIGRATION_9_10, MIGRATION_10_11)
                             .fallbackToDestructiveMigration()
                             .build();
                 }

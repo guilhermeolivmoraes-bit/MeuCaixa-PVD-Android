@@ -61,11 +61,13 @@ public class ReportsFragment extends Fragment {
             for (Sale sale : sales) {
                 total += sale.getTotalPrice();
             }
-            double avgTicket = sales.isEmpty() ? 0 : total / sales.size();
 
             textTodaySalesValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
             textTodaySalesCount.setText(String.format(Locale.getDefault(), "%d venda(s)", sales.size()));
-            textAvgTicketDay.setText(String.format(Locale.getDefault(), "R$ %.2f", avgTicket));
+        });
+
+        reportsViewModel.getNetProfitForDay(startOfDay, endOfDay).observe(getViewLifecycleOwner(), profit -> {
+            textAvgTicketDay.setText(String.format(Locale.getDefault(), "R$ %.2f", profit != null ? profit : 0.0));
         });
 
         calendar = Calendar.getInstance();
@@ -81,11 +83,13 @@ public class ReportsFragment extends Fragment {
             for (Sale sale : sales) {
                 total += sale.getTotalPrice();
             }
-            double avgTicket = sales.isEmpty() ? 0 : total / sales.size();
 
             textMonthSalesValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
             textMonthSalesCount.setText(String.format(Locale.getDefault(), "%d venda(s)", sales.size()));
-            textAvgTicketMonth.setText(String.format(Locale.getDefault(), "R$ %.2f", avgTicket));
+        });
+
+        reportsViewModel.getNetProfitForMonth(startOfMonth, endOfMonth).observe(getViewLifecycleOwner(), profit -> {
+            textAvgTicketMonth.setText(String.format(Locale.getDefault(), "R$ %.2f", profit != null ? profit : 0.0));
         });
     }
 }

@@ -14,10 +14,10 @@ import java.util.List;
 @Dao
 public interface ProductDao {
 
-    @Query("SELECT * FROM products WHERE user_id = :userId AND product_stock > 0 ORDER BY product_name ASC")
+    @Query("SELECT * FROM products WHERE user_id = :userId AND (product_stock > 0 OR is_own_production = 1) ORDER BY product_name ASC")
     LiveData<List<Product>> getAll(long userId);
 
-    @Query("SELECT * FROM products WHERE user_id = :userId AND product_name LIKE :query AND product_stock > 0 ORDER BY product_name ASC")
+    @Query("SELECT * FROM products WHERE user_id = :userId AND product_name LIKE :query AND (product_stock > 0 OR is_own_production = 1) ORDER BY product_name ASC")
     LiveData<List<Product>> searchByName(long userId, String query);
 
     @Query("SELECT * FROM products WHERE id = :id AND user_id = :userId LIMIT 1")

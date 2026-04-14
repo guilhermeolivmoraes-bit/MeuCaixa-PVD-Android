@@ -67,14 +67,26 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         public void bind(final Product product, final OnProductClickListener listener) {
             name.setText(product.getName());
             price.setText(String.format(Locale.getDefault(), "R$ %.2f", product.getPrice()));
-            stock.setText(String.format(Locale.getDefault(), "Estoque: %.2f", product.getStock()));
-
-            if (product.getStock() <= 5) { 
-                stock.setTextColor(Color.RED);
-                stockWarningIcon.setVisibility(View.VISIBLE);
-            } else {
+            if (product.isOwnProduction()) {
+                stock.setText("Fabricação Própria");
                 stock.setTextColor(Color.GRAY);
                 stockWarningIcon.setVisibility(View.GONE);
+            } else {
+                String stockStr;
+                if(product.getUnitType() != null && product.getUnitType().equalsIgnoreCase("kg/g")) {
+                    stockStr = String.format(Locale.getDefault(), "Estoque: %.3f", product.getStock());
+                } else {
+                    stockStr = String.format(Locale.getDefault(), "Estoque: %d", (long) product.getStock());
+                }
+                stock.setText(stockStr);
+
+                if (product.getStock() <= 5) { 
+                    stock.setTextColor(Color.RED);
+                    stockWarningIcon.setVisibility(View.VISIBLE);
+                } else {
+                    stock.setTextColor(Color.GRAY);
+                    stockWarningIcon.setVisibility(View.GONE);
+                }
             }
 
             itemView.setOnClickListener(v -> listener.onProductClick(product));

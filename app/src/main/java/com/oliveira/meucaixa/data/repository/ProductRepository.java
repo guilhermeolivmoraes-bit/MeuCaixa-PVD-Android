@@ -30,6 +30,10 @@ public class ProductRepository {
         return productDao.getById(productId, userId);
     }
 
+    public LiveData<List<ProductIngredient>> getIngredientsForProduct(long productId) {
+        return productIngredientDao.getIngredientsForProduct(productId);
+    }
+
     public void saveProductWithIngredients(Product product, Set<ProductIngredient> ingredients) {
         executorService.execute(() -> {
             long productId = productDao.insert(product);
@@ -37,6 +41,16 @@ public class ProductRepository {
                 pi.setProductId(productId);
                 productIngredientDao.insert(pi);
             }
+        });
+    }
+
+    public void updateProductWithIngredients(Product product, Set<ProductIngredient> ingredients) {
+        executorService.execute(() -> {
+            productDao.update(product);
+            for (ProductIngredient pi : ingredients) {
+                pi.setProductId(product.getId());
+            }
+            productIngredientDao.replaceRecipe(product.getId(), new java.util.ArrayList<>(ingredients));
         });
     }
 

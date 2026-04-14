@@ -28,6 +28,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
     private final Set<ProductIngredient> recipeIngredients = new HashSet<>();
     private final MutableLiveData<Double> totalRecipeCost = new MutableLiveData<>(0.0);
     private List<Ingredient> allDatabaseIngredients;
+    private boolean isRecipeLoaded = false;
 
     private final Observer<List<Ingredient>> ingredientsObserver = ingredients -> {
         allDatabaseIngredients = ingredients;
@@ -65,6 +66,21 @@ public class AddEditProductViewModel extends AndroidViewModel {
         return productRepository.getProductById(productId, userId);
     }
 
+    public LiveData<List<ProductIngredient>> getIngredientsForProduct(long productId) {
+        return productRepository.getIngredientsForProduct(productId);
+    }
+
+    public void loadRecipe(List<ProductIngredient> existing) {
+        if (!isRecipeLoaded) {
+            recipeIngredients.clear();
+            if (existing != null) {
+                recipeIngredients.addAll(existing);
+            }
+            recalculateTotalCost();
+            isRecipeLoaded = true;
+        }
+    }
+
     public boolean addIngredientToRecipe(ProductIngredient ingredient) {
         boolean added = recipeIngredients.add(ingredient);
         if (added) {
@@ -86,6 +102,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
 
     public void clearRecipeIngredients() {
         recipeIngredients.clear();
+        isRecipeLoaded = false;
         recalculateTotalCost();
     }
 
@@ -118,7 +135,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
         if (product.getId() == 0) {
             productRepository.saveProductWithIngredients(product, recipeIngredients);
         } else {
-            productRepository.updateProduct(product);
+            productRepository.updateProductWithIngredients(product, recipeIngredients);
         }
     }
 
