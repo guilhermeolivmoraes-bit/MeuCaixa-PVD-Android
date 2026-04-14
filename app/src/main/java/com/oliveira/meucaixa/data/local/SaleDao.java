@@ -21,14 +21,6 @@ public abstract class SaleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertSaleItems(List<SaleItem> items);
 
-    @Transaction
-    public void saveCompleteSale(Sale sale, List<SaleItem> items) {
-        long saleId = insertSale(sale);
-        for (SaleItem item : items) {
-            item.setSaleId(saleId);
-        }
-        insertSaleItems(items);
-    }
 
     @Query("SELECT * FROM sales WHERE user_id = :userId AND date >= :startOfDay AND date < :endOfDay ORDER BY date DESC")
     public abstract LiveData<List<Sale>> getSalesForDay(long userId, long startOfDay, long endOfDay);

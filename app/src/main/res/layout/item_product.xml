@@ -9,69 +9,104 @@
     android:layout_marginVertical="8dp"
     app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
-    app:strokeColor="?attr/colorOnSurface"
-    app:strokeWidth="0dp">
+    app:cardElevation="0dp"
+    app:strokeColor="?attr/separatorColor"
+    app:strokeWidth="0.5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp">
 
-        <!-- Nome do Produto -->
-        <TextView
-            android:id="@+id/text_product_name"
+        <LinearLayout
+            android:id="@+id/content_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/text_product_price"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/actions_container"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Nome do Produto Aqui" />
+            android:layout_marginEnd="16dp">
 
-        <!-- Preço do Produto -->
-        <TextView
-            android:id="@+id/text_product_price"
+            <TextView
+                android:id="@+id/text_primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Nome do Item Aqui" />
+
+            <TextView
+                android:id="@+id/text_secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp"
+                tools:text="Descrição ou Preço secundário" />
+                
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+                
+                <ImageView
+                    android:id="@+id/icon_warning"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_warning"
+                    android:visibility="gone"
+                    app:tint="@color/red_pastel"
+                    tools:visibility="visible"
+                    android:layout_marginEnd="4dp"/>
+                
+                <TextView
+                    android:id="@+id/text_tertiary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="Estoque: 10" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Ações Translúcidas -->
+        <LinearLayout
+            android:id="@+id/actions_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/green_500"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="R$ 99,99" />
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Ícone de Alerta de Estoque Baixo -->
-        <ImageView
-            android:id="@+id/icon_stock_warning"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/ic_warning"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_product_name"
-            app:tint="@color/red_500"
-            tools:ignore="ContentDescription"
-            tools:visibility="visible"/>
+            <ImageButton
+                android:id="@+id/btn_edit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_edit"
+                android:background="@drawable/rounded_icon_background"
+                android:backgroundTint="?attr/colorPrimary"
+                android:alpha="0.8"
+                android:padding="8dp"
+                app:tint="?attr/colorOnPrimary" />
 
-        <!-- Texto do Estoque -->
-        <TextView
-            android:id="@+id/text_product_stock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/icon_stock_warning"
-            app:layout_constraintTop_toBottomOf="@+id/text_product_name"
-            tools:text="Estoque: 3"
-            tools:textColor="@color/red_500"/>
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_delete"
+                android:background="@drawable/rounded_icon_background"
+                android:backgroundTint="@color/red_pastel"
+                android:alpha="0.8"
+                android:padding="8dp"
+                app:tint="@color/white" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

@@ -58,9 +58,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
 
         public IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.text_product_name);
-            stock = itemView.findViewById(R.id.text_product_stock);
-            price = itemView.findViewById(R.id.text_product_price);
+            name = itemView.findViewById(R.id.text_primary);
+            stock = itemView.findViewById(R.id.text_tertiary);
+            price = itemView.findViewById(R.id.text_secondary);
         }
 
         public void bind(final Ingredient ingredient, final OnIngredientClickListener listener) {
@@ -74,7 +74,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
                 ingredient.getPackageQuantity(), 
                 ingredient.getUnitOfMeasure() != null ? ingredient.getUnitOfMeasure() : ""));
 
-            itemView.setOnClickListener(v -> listener.onIngredientClick(ingredient));
+            itemView.findViewById(R.id.btn_edit).setOnClickListener(v -> listener.onIngredientClick(ingredient));
+            
+            // TODO: Call listener.onIngredientDelete(ingredient) in the future
+            itemView.findViewById(R.id.btn_delete).setOnClickListener(v -> {
+            });
         }
     }
 }

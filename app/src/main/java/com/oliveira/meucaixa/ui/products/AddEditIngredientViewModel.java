@@ -59,7 +59,7 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
 
     public void saveIngredient(Ingredient currentIngredient, String name, String priceText, String quantityText, String currentStockText) {
         if (TextUtils.isEmpty(name)) {
-            saveErrorEvent.setValue("Ingredient name cannot be empty.");
+            saveErrorEvent.setValue("O nome do insumo não pode ser vazio.");
             return;
         }
 
@@ -83,7 +83,7 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
                 currentStock = Double.parseDouble(cleanCurrentStock) / 1000.0;
             }
         } catch (NumberFormatException e) {
-            saveErrorEvent.setValue("Invalid number format.");
+            saveErrorEvent.setValue("Formato numérico inválido.");
             return;
         }
 
@@ -105,7 +105,7 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
                 }
                 saveSuccessEvent.postValue(true);
             } catch (Exception e) {
-                saveErrorEvent.postValue("Error saving to database.");
+                saveErrorEvent.postValue("Erro ao salvar no banco de dados.");
             }
         });
     }
@@ -117,7 +117,7 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
                 ingredientDao.delete(currentIngredient);
                 saveSuccessEvent.postValue(true);
             } catch (Exception e) {
-                saveErrorEvent.postValue("Error deleting from database.");
+                saveErrorEvent.postValue("Erro ao deletar do banco de dados.");
             }
         });
     }

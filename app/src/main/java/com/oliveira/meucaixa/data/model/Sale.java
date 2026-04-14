@@ -21,8 +21,6 @@ public class Sale {
     private long userId;
 
     private long date;
-    private String productName;
-    private double quantity;
     private double totalPrice;
     private double totalCost;
 
@@ -50,22 +48,6 @@ public class Sale {
 
     public void setDate(long date) {
         this.date = date;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
     }
 
     public double getTotalPrice() {

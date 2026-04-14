@@ -1,7 +1,6 @@
 package com.oliveira.meucaixa.ui.products;
 
 import com.oliveira.meucaixa.R;
-import com.oliveira.meucaixa.data.model.Product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 import java.util.ArrayList;
 
 public class ProductListFragment extends Fragment {
@@ -28,9 +28,9 @@ public class ProductListFragment extends Fragment {
     private IngredientAdapter ingredientAdapter;
     
     private NavController navController;
-    private TextView textProductCount, textTitle;
-    private RecyclerView recyclerView;
-    private ChipGroup chipGroupFilters;
+    private TextView textTitle; // Remover textProductCount se não tiver onde colocar, ou manter se quiser usar
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
     private FloatingActionButton fab;
     
     private boolean isShowingIngredients = false;
@@ -49,19 +49,16 @@ public class ProductListFragment extends Fragment {
         productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
 
         textTitle = view.findViewById(R.id.text_title);
-        textProductCount = view.findViewById(R.id.text_product_count);
-        recyclerView = view.findViewById(R.id.recycler_view_products);
-        chipGroupFilters = view.findViewById(R.id.chip_group_filters);
+        viewPager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tab_layout);
         fab = view.findViewById(R.id.fab_add_product);
 
-        setupRecyclerView();
-        setupChips();
+        setupAdapters();
+        setupPagerAndTabs();
         observeData();
     }
 
-    private void setupRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        
+    private void setupAdapters() {
         productAdapter = new ProductAdapter(new ArrayList<>(), product -> {
             Bundle bundle = new Bundle();
             bundle.putLong("productId", product.getId());
@@ -73,29 +70,34 @@ public class ProductListFragment extends Fragment {
             bundle.putLong("ingredientId", ingredient.getId());
             navController.navigate(R.id.action_global_to_addEditIngredient, bundle);
         });
-
-        // initial state
-        recyclerView.setAdapter(productAdapter);
-        setupFab(R.id.action_global_to_addEditProduct);
     }
 
-    private void setupChips() {
-        chipGroupFilters.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
-            
-            int checkedId = checkedIds.get(0);
-            if (checkedId == R.id.chip_ingredients) {
-                isShowingIngredients = true;
-                recyclerView.setAdapter(ingredientAdapter);
-                textTitle.setText("Meus Insumos");
-                setupFab(R.id.action_global_to_addEditIngredient);
+    private void setupPagerAndTabs() {
+        ProductPagerAdapter pagerAdapter = new ProductPagerAdapter(productAdapter, ingredientAdapter);
+        viewPager.setAdapter(pagerAdapter);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            if (position == 0) {
+                tab.setText("Produtos");
             } else {
-                isShowingIngredients = false;
-                recyclerView.setAdapter(productAdapter);
-                textTitle.setText("Meus Produtos");
-                setupFab(R.id.action_global_to_addEditProduct);
+                tab.setText("Insumos");
             }
-            updateCountText();
+        }).attach();
+
+        // Sincroniza estado de botões/titulos quando rolar a página
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    isShowingIngredients = false;
+                    textTitle.setText("Meus Produtos");
+                    setupFab(R.id.action_global_to_addEditProduct);
+                } else {
+                    isShowingIngredients = true;
+                    textTitle.setText("Meus Insumos");
+                    setupFab(R.id.action_global_to_addEditIngredient);
+                }
+            }
         });
     }
     
@@ -106,28 +108,10 @@ public class ProductListFragment extends Fragment {
     private void observeData() {
         productListViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
             productAdapter.setProducts(products);
-            if (!isShowingIngredients) {
-                updateCountText();
-                recyclerView.setVisibility(products.isEmpty() ? View.GONE : View.VISIBLE);
-            }
         });
         
         productListViewModel.getAllIngredients().observe(getViewLifecycleOwner(), ingredients -> {
             ingredientAdapter.setIngredients(ingredients);
-            if (isShowingIngredients) {
-                updateCountText();
-                recyclerView.setVisibility(ingredients.isEmpty() ? View.GONE : View.VISIBLE);
-            }
         });
-    }
-    
-    private void updateCountText() {
-        if (isShowingIngredients) {
-            int size = ingredientAdapter.getItemCount();
-            textProductCount.setText(String.format("%d insumo(s)", size));
-        } else {
-            int size = productAdapter.getItemCount();
-            textProductCount.setText(String.format("%d produto(s)", size));
-        }
     }
 }

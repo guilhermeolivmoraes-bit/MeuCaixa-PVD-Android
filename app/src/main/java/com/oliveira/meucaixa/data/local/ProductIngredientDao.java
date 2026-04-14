@@ -29,6 +29,7 @@ public interface ProductIngredientDao {
     @Delete
     void delete(ProductIngredient productIngredient);
 
+
     // Old method if you want to keep
     @Query("SELECT * FROM product_ingredients WHERE product_id = :productId")
     LiveData<List<ProductIngredient>> getIngredientsForProduct(long productId);

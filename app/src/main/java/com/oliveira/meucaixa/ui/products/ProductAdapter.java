@@ -58,10 +58,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.text_product_name);
-            price = itemView.findViewById(R.id.text_product_price);
-            stock = itemView.findViewById(R.id.text_product_stock);
-            stockWarningIcon = itemView.findViewById(R.id.icon_stock_warning);
+            name = itemView.findViewById(R.id.text_primary);
+            price = itemView.findViewById(R.id.text_secondary);
+            stock = itemView.findViewById(R.id.text_tertiary);
+            stockWarningIcon = itemView.findViewById(R.id.icon_warning);
         }
 
         public void bind(final Product product, final OnProductClickListener listener) {
@@ -89,7 +89,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 }
             }
 
-            itemView.setOnClickListener(v -> listener.onProductClick(product));
+            itemView.findViewById(R.id.btn_edit).setOnClickListener(v -> listener.onProductClick(product));
+            
+            // TODO: Call listener.onProductDelete(product) in the future to show confirmation dialog
+            itemView.findViewById(R.id.btn_delete).setOnClickListener(v -> {
+                // By default, do nothing until ProductListFragment implements delete interface
+            });
         }
     }
 }

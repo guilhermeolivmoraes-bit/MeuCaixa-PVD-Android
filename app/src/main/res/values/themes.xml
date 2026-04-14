@@ -1,10 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Tema Base para Modo Claro -->
+    <!-- Tema Base para Modo Claro (Soft UI) -->
     <style name="Theme.MeuCaixa" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Cores -->
-        <item name="colorSurface">@color/white</item>
+        <item name="android:colorBackground">@color/background_light</item>
+        <item name="colorSurface">@color/card_light</item>
         <item name="colorOnSurface">@color/black</item>
-        <item name="colorPrimary">@color/green_500</item>
+        <item name="colorPrimary">@color/green_pastel_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/black</item>
         <item name="colorOnSecondary">@color/white</item>
@@ -18,21 +19,23 @@
         <item name="separatorColor">@color/gray_300</item>
 
         <!-- Barra de Status -->
-        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:statusBarColor">?attr/android:colorBackground</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <!-- Estilo do FAB (RESTAURADO) -->
+    <!-- Estilo do FAB -->
     <style name="MyFloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">@color/green_500</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
         <item name="tint">?attr/fabIconColor</item>
         <item name="strokeColor">@color/black</item>
-        <item name="strokeWidth">2dp</item>
+        <item name="strokeWidth">0dp</item> <!-- Soft UI sem borda dura -->
     </style>
 
-    <!-- Estilo: Botão Outlined Arredondado (RESTAURADO) -->
+    <!-- Estilo: Botão Outlined Arredondado -->
     <style name="Widget.App.Button.OutlinedButton.Rounded" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.Button.Rounded</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/green_pastel_dark</item>
     </style>
 
     <style name="ShapeAppearance.App.Button.Rounded" parent="">
@@ -45,10 +48,11 @@
         <item name="itemIconTint">@color/bottom_nav_icon_color_selector</item>
         <item name="itemTextColor">@color/bottom_nav_icon_color_selector</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNavigationView.ActiveIndicator</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
     </style>
 
     <style name="Widget.App.BottomNavigationView.ActiveIndicator" parent="@style/Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/green_100</item>
+        <item name="android:color">@color/green_pastel_light</item>
     </style>
 
 </resources>

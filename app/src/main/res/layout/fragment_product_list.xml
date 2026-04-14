@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="?attr/android:colorBackground"
     tools:context=".ui.products.ProductListFragment">
 
     <!-- Container Principal -->
@@ -14,73 +14,50 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Título e Contagem -->
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Meus Produtos"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="34sp"
-            android:textStyle="bold"
-            android:paddingStart="24dp"
-            android:paddingTop="24dp"
-            android:paddingEnd="24dp"/>
-
-        <TextView
-            android:id="@+id/text_product_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 produto(s)"
-            android:textColor="@color/gray_600"
-            android:textSize="16sp"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"/>
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_filters"
+        <!-- Header / Título -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingHorizontal="24dp"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_products"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:background="?attr/android:colorBackground"
+            android:paddingStart="24dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="16dp">
+            
+            <TextView
+                android:id="@+id/text_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipMinHeight="48dp"
-                android:textSize="16sp"
-                android:checked="true"
-                android:text="Produtos" />
+                android:text="Estoque"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+        </FrameLayout>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_ingredients"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:chipMinHeight="48dp"
-                android:textSize="16sp"
-                android:text="Insumos" />
+        <!-- TabLayout Minimalista Soft UI -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/android:colorBackground"
+            app:tabIndicatorColor="@color/green_pastel_light"
+            app:tabIndicatorHeight="3dp"
+            app:tabIndicatorFullWidth="false"
+            app:tabSelectedTextColor="?attr/colorOnSurface"
+            app:tabTextColor="?attr/colorOnSurfaceVariant"
+            app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-        </com.google.android.material.chip.ChipGroup>
-
-        <!-- Lista de Produtos -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_products"
+        <!-- ViewPager2 substitui a RecyclerView direta -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="16dp"
-            android:clipToPadding="false"
-            android:paddingBottom="88dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_product" />
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 
-    <!-- Botão de Adicionar Produto (FAB) -->
+    <!-- Botão de Adicionar (FAB) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_product"
         style="@style/MyFloatingActionButton"
