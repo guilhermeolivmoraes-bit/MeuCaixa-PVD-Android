@@ -1,29 +1,35 @@
 package com.oliveira.meucaixa.data.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
 @Entity(tableName = "product_ingredients",
-        primaryKeys = {"productId", "ingredientId"},
+        primaryKeys = {"product_id", "ingredient_id"},
         foreignKeys = {
                 @ForeignKey(entity = Product.class,
                             parentColumns = "id",
-                            childColumns = "productId",
+                            childColumns = "product_id",
                             onDelete = ForeignKey.CASCADE),
                 @ForeignKey(entity = Ingredient.class,
                             parentColumns = "id",
-                            childColumns = "ingredientId",
+                            childColumns = "ingredient_id",
                             onDelete = ForeignKey.CASCADE)
         },
         indices = {
-                @Index(value = {"productId"}),
-                @Index(value = {"ingredientId"})
+                @Index(value = {"product_id"}),
+                @Index(value = {"ingredient_id"})
         })
 public class ProductIngredient {
 
+    @ColumnInfo(name = "product_id")
     private long productId;
+
+    @ColumnInfo(name = "ingredient_id")
     private long ingredientId;
+
+    @ColumnInfo(name = "quantity_used")
     private double quantityUsed;
 
     public ProductIngredient(long productId, long ingredientId, double quantityUsed) {

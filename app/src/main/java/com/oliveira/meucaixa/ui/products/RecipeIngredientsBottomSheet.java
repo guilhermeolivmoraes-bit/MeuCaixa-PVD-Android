@@ -24,9 +24,18 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import com.oliveira.meucaixa.R;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import androidx.lifecycle.ViewModelProvider;
+import com.oliveira.meucaixa.data.model.Ingredient;
+import com.oliveira.meucaixa.data.model.ProductIngredient;
+import com.oliveira.meucaixa.utils.WeightTextWatcher;
 
 public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
 
@@ -38,10 +47,11 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
     private MaterialButton buttonConfirm;
 
     private RecipeIngredientAdapter adapter;
-    private List<RecipeIngredient> ingredientList = new ArrayList<>();
-
-    // Mock data for UI presentation as requested
-    private final String[] mockDatabaseIngredients = {"Farinha de Trigo", "Açúcar", "Leite", "Chocolate em Pó", "Fermento", "Manteiga"};
+    private final List<RecipeIngredient> ingredientList = new ArrayList<>();
+    
+    private AddEditProductViewModel viewModel;
+    private List<Ingredient> availableIngredients = new ArrayList<>();
+    private Ingredient selectedIngredient = null;
 
     public static RecipeIngredientsBottomSheet newInstance() {
         return new RecipeIngredientsBottomSheet();
@@ -79,15 +89,36 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
         textTotalCost = view.findViewById(R.id.text_total_cost);
         buttonConfirm = view.findViewById(R.id.button_confirm_recipe);
 
-        setupAutoComplete();
+        editTextQuantity.addTextChangedListener(new WeightTextWatcher(editTextQuantity));
+
+        viewModel = new ViewModelProvider(requireActivity()).get(AddEditProductViewModel.class);
+
         setupRecyclerView();
         setupListeners();
-        updateTotalCost();
+        setupObservers();
     }
 
-    private void setupAutoComplete() {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, mockDatabaseIngredients);
-        autoCompleteIngredient.setAdapter(arrayAdapter);
+    private void setupObservers() {
+        viewModel.getAllIngredients().observe(getViewLifecycleOwner(), ingredients -> {
+            if (ingredients != null) {
+                availableIngredients = ingredients;
+                List<String> ingredientNames = new ArrayList<>();
+                for (Ingredient ing : availableIngredients) {
+                    ingredientNames.add(ing.getName());
+                }
+                
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, ingredientNames);
+                autoCompleteIngredient.setAdapter(arrayAdapter);
+                
+                // Refresh list if needed
+                updateRecyclerView();
+            }
+        });
+
+        viewModel.getTotalRecipeCost().observe(getViewLifecycleOwner(), cost -> {
+            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            textTotalCost.setText("Custo Total da Receita: " + format.format(cost));
+        });
     }
 
     private void setupRecyclerView() {
@@ -97,52 +128,91 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void setupListeners() {
-        buttonAdd.setOnClickListener(v -> {
-            String name = autoCompleteIngredient.getText().toString().trim();
-            String quantityStr = editTextQuantity.getText().toString().trim();
+        autoCompleteIngredient.setOnItemClickListener((parent, view, position, id) -> {
+            // Find the selected ingredient by matching the string
+            String selectedName = (String) parent.getItemAtPosition(position);
+            for (Ingredient ing : availableIngredients) {
+                if (ing.getName().equals(selectedName)) {
+                    selectedIngredient = ing;
+                    break;
+                }
+            }
+        });
 
-            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(quantityStr)) {
-                Toast.makeText(getContext(), "Preencha o insumo e a quantidade", Toast.LENGTH_SHORT).show();
+        buttonAdd.setOnClickListener(v -> {
+            if (selectedIngredient == null) {
+                Toast.makeText(getContext(), "Selecione um insumo válido da lista", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Exemplo de cálculo: backend fará o real. (5.00 usado de mockup fee)
+            String quantityStr = editTextQuantity.getText().toString().trim();
+            if (TextUtils.isEmpty(quantityStr)) {
+                Toast.makeText(getContext(), "Preencha a quantidade", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             double quantity = 0;
             try {
-                quantity = Double.parseDouble(quantityStr.replace(",", "."));
-            } catch (Exception ignored) {}
+                String cleanNumber = quantityStr.replaceAll("[^\\d]", "");
+                quantity = Double.parseDouble(cleanNumber) / 1000.0;
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Quantidade inválida", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            double cost = quantity * 5.0; 
+            if (quantity <= 0) {
+                Toast.makeText(getContext(), "Quantidade deve ser maior que zero", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ProductIngredient pi = new ProductIngredient(0, selectedIngredient.getId(), quantity);
+            boolean added = viewModel.addIngredientToRecipe(pi);
             
-            ingredientList.add(new RecipeIngredient(name, quantityStr, cost));
-            adapter.notifyItemInserted(ingredientList.size() - 1);
-            
-            autoCompleteIngredient.setText("");
-            editTextQuantity.setText("");
-            
-            updateTotalCost();
+            if (added) {
+                autoCompleteIngredient.setText("");
+                editTextQuantity.setText("");
+                selectedIngredient = null;
+                updateRecyclerView();
+            } else {
+                Toast.makeText(getContext(), "Este insumo já foi adicionado", Toast.LENGTH_SHORT).show();
+            }
         });
 
         buttonConfirm.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Receita confirmada com " + ingredientList.size() + " insumos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Receita confirmada. Grave o produto para salvar no banco.", Toast.LENGTH_LONG).show();
             dismiss();
         });
     }
 
     private void removeIngredient(int position) {
         if (position >= 0 && position < ingredientList.size()) {
-            ingredientList.remove(position);
-            adapter.notifyItemRemoved(position);
-            updateTotalCost();
+            RecipeIngredient itemUI = ingredientList.get(position);
+            viewModel.removeIngredientFromRecipe(itemUI.productIngredientRef);
+            updateRecyclerView();
         }
     }
 
-    private void updateTotalCost() {
-        double total = 0;
-        for (RecipeIngredient item : ingredientList) {
-            total += item.cost;
+    private void updateRecyclerView() {
+        ingredientList.clear();
+        Set<ProductIngredient> recipeSet = viewModel.getRecipeIngredients();
+        
+        if (availableIngredients != null && recipeSet != null) {
+            for (ProductIngredient pi : recipeSet) {
+                for (Ingredient dbIngredient : availableIngredients) {
+                    if (pi.getIngredientId() == dbIngredient.getId()) {
+                        double cost = viewModel.calculateIngredientCost(dbIngredient, pi.getQuantityUsed());
+                        ingredientList.add(new RecipeIngredient(
+                            dbIngredient.getName(), 
+                            String.format(Locale.getDefault(), "%.3f", pi.getQuantityUsed()), 
+                            cost,
+                            pi
+                        ));
+                        break;
+                    }
+                }
+            }
         }
-        textTotalCost.setText(String.format(Locale.getDefault(), "Custo Total da Receita: R$ %.2f", total));
+        adapter.notifyDataSetChanged();
     }
 
     // --- Inner Classes for UI Management ---
@@ -151,11 +221,13 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
         String name;
         String quantity;
         double cost;
+        ProductIngredient productIngredientRef;
 
-        public RecipeIngredient(String name, String quantity, double cost) {
+        public RecipeIngredient(String name, String quantity, double cost, ProductIngredient ref) {
             this.name = name;
             this.quantity = quantity;
             this.cost = cost;
+            this.productIngredientRef = ref;
         }
     }
 

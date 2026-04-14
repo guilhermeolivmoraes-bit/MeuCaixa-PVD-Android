@@ -1,52 +1,83 @@
 package com.oliveira.meucaixa.ui.products;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.ProductDao;
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
 import com.oliveira.meucaixa.data.model.Ingredient;
 import com.oliveira.meucaixa.data.model.Product;
 import com.oliveira.meucaixa.data.model.ProductIngredient;
+import com.oliveira.meucaixa.data.repository.IngredientRepository;
+import com.oliveira.meucaixa.data.repository.ProductRepository;
 import com.oliveira.meucaixa.utils.SessionManager;
-
-import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class AddEditProductViewModel extends AndroidViewModel {
 
-    private final ProductDao productDao;
-    private final ExecutorService executorService;
+    private final ProductRepository productRepository;
+    private final IngredientRepository ingredientRepository;
     private final long userId;
 
     // In-memory Set collection to guarantee uniqueness of ingredients in the recipe
     private final Set<ProductIngredient> recipeIngredients = new HashSet<>();
+    private final MutableLiveData<Double> totalRecipeCost = new MutableLiveData<>(0.0);
+    private List<Ingredient> allDatabaseIngredients;
+
+    private final Observer<List<Ingredient>> ingredientsObserver = ingredients -> {
+        allDatabaseIngredients = ingredients;
+        recalculateTotalCost();
+    };
+    private final LiveData<List<Ingredient>> allIngredientsLiveData;
 
     public AddEditProductViewModel(Application application) {
         super(application);
-        AppDatabase db = AppDatabase.getDatabase(application);
-        productDao = db.productDao();
-        executorService = Executors.newSingleThreadExecutor();
+        productRepository = new ProductRepository(application);
+        ingredientRepository = new IngredientRepository(application);
 
         SessionManager sessionManager = new SessionManager(application);
         userId = sessionManager.getLoggedInUserId();
+
+        allIngredientsLiveData = ingredientRepository.getAllIngredients();
+        allIngredientsLiveData.observeForever(ingredientsObserver);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        allIngredientsLiveData.removeObserver(ingredientsObserver);
+    }
+
+    public LiveData<List<Ingredient>> getAllIngredients() {
+        return allIngredientsLiveData;
+    }
+
+    public LiveData<Double> getTotalRecipeCost() {
+        return totalRecipeCost;
     }
 
     public LiveData<Product> getProductById(long productId) {
-        return productDao.getById(productId, userId);
+        return productRepository.getProductById(productId, userId);
     }
 
     public boolean addIngredientToRecipe(ProductIngredient ingredient) {
-        // Prevents adding the same ingredient reference twice
-        return recipeIngredients.add(ingredient);
+        boolean added = recipeIngredients.add(ingredient);
+        if (added) {
+            recalculateTotalCost();
+        }
+        return added;
     }
 
     public void removeIngredientFromRecipe(ProductIngredient ingredient) {
-        recipeIngredients.remove(ingredient);
+        boolean removed = recipeIngredients.remove(ingredient);
+        if (removed) {
+            recalculateTotalCost();
+        }
     }
 
     public Set<ProductIngredient> getRecipeIngredients() {
@@ -55,37 +86,44 @@ public class AddEditProductViewModel extends AndroidViewModel {
 
     public void clearRecipeIngredients() {
         recipeIngredients.clear();
+        recalculateTotalCost();
     }
 
-    public double calculateProductionCost(Set<ProductIngredient> recipe, List<Ingredient> databaseIngredients) {
-        double totalCost = 0.0;
+    public void recalculateTotalCost() {
+        if (allDatabaseIngredients == null || allDatabaseIngredients.isEmpty()) {
+            totalRecipeCost.postValue(0.0);
+            return;
+        }
 
-        for (ProductIngredient productIngredient : recipe) {
-            for (Ingredient dbIngredient : databaseIngredients) {
+        double totalCost = 0.0;
+        for (ProductIngredient productIngredient : recipeIngredients) {
+            for (Ingredient dbIngredient : allDatabaseIngredients) {
                 if (productIngredient.getIngredientId() == dbIngredient.getId()) {
-                    if (dbIngredient.getPackageQuantity() > 0) {
-                        double fractionCost = (dbIngredient.getPackagePrice() / dbIngredient.getPackageQuantity());
-                        totalCost += (productIngredient.getQuantityUsed() * fractionCost);
-                    }
+                    totalCost += calculateIngredientCost(dbIngredient, productIngredient.getQuantityUsed());
                     break;
                 }
             }
         }
-        return totalCost;
+        totalRecipeCost.postValue(totalCost);
     }
 
-    public void saveProduct(Product product) {
-        executorService.execute(() -> {
-            product.setUserId(userId);
-            // In a real scenario, you would insert the product and then map its ID to save the Set of ProductIngredients
-            productDao.insert(product); 
-        });
+    public double calculateIngredientCost(Ingredient ingredient, double quantityUsed) {
+        if (ingredient == null || ingredient.getPackageQuantity() <= 0) return 0.0;
+        double unitPrice = ingredient.getPackagePrice() / ingredient.getPackageQuantity();
+        return unitPrice * quantityUsed;
+    }
+
+    public void confirmRecipe(Product product) {
+        product.setUserId(userId);
+        productRepository.saveProductWithIngredients(product, recipeIngredients);
+    }
+
+    public void updateProduct(Product product) {
+        productRepository.updateProduct(product);
     }
 
     public void deleteProduct(Product product) {
-        executorService.execute(() -> {
-            product.setStock(0.0);
-            productDao.update(product);
-        });
+        product.setStock(0.0);
+        productRepository.updateProduct(product);
     }
 }
