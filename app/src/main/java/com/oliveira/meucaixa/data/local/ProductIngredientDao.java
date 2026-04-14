@@ -33,6 +33,9 @@ public interface ProductIngredientDao {
     @Query("SELECT * FROM product_ingredients WHERE product_id = :productId")
     LiveData<List<ProductIngredient>> getIngredientsForProduct(long productId);
 
+    @Query("SELECT * FROM product_ingredients WHERE product_id = :productId")
+    List<ProductIngredient> getIngredientsForProductSynchronous(long productId);
+
     // Clean old recipe
     @Query("DELETE FROM product_ingredients WHERE product_id = :productId")
     void deleteIngredientsForProduct(long productId);

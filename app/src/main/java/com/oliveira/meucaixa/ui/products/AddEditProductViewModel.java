@@ -43,7 +43,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
         SessionManager sessionManager = new SessionManager(application);
         userId = sessionManager.getLoggedInUserId();
 
-        allIngredientsLiveData = ingredientRepository.getAllIngredients();
+        allIngredientsLiveData = ingredientRepository.getAllIngredients(userId);
         allIngredientsLiveData.observeForever(ingredientsObserver);
     }
 
@@ -113,9 +113,13 @@ public class AddEditProductViewModel extends AndroidViewModel {
         return unitPrice * quantityUsed;
     }
 
-    public void confirmRecipe(Product product) {
+    public void saveProduct(Product product) {
         product.setUserId(userId);
-        productRepository.saveProductWithIngredients(product, recipeIngredients);
+        if (product.getId() == 0) {
+            productRepository.saveProductWithIngredients(product, recipeIngredients);
+        } else {
+            productRepository.updateProduct(product);
+        }
     }
 
     public void updateProduct(Product product) {

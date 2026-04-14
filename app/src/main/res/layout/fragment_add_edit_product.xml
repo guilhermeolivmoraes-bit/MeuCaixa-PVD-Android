@@ -33,203 +33,226 @@
         app:layout_constraintStart_toEndOf="@+id/button_back"
         app:layout_constraintTop_toTopOf="@+id/button_back" />
 
-    <!-- Campos de Entrada -->
-    <TextView
-        android:id="@+id/label_product_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:text="Nome do Produto"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_back" />
-
-    <EditText
-        android:id="@+id/edit_text_product_name"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/editTextBackground"
-        android:hint="Ex: Maçã Gala"
-        android:inputType="textCapSentences"
-        android:paddingHorizontal="20dp"
-        android:textColor="?attr/colorOnSurface"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_action_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_product_name" />
+        app:layout_constraintTop_toBottomOf="@+id/button_back"
+        android:layout_marginTop="16dp">
 
-    <TextView
-        android:id="@+id/label_product_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="Preço (R$)"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_product_name" />
-
-    <EditText
-        android:id="@+id/edit_text_product_price"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/editTextBackground"
-        android:hint="0,00"
-        android:inputType="numberDecimal"
-        android:paddingHorizontal="20dp"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_product_price" />
-
-    <TextView
-        android:id="@+id/label_product_stock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="Estoque"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_product_price" />
-
-    <RadioGroup
-        android:id="@+id/radio_group_unit_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_product_stock">
-
-        <RadioButton
-            android:id="@+id/radio_unidade"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Unidade (Un)"
-            android:checked="true"
-            android:textColor="?attr/colorOnSurface" />
-
-        <RadioButton
-            android:id="@+id/radio_peso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Peso (Kg/g)"
-            android:textColor="?attr/colorOnSurface" />
-    </RadioGroup>
-
-    <EditText
-        android:id="@+id/edit_text_product_stock"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/editTextBackground"
-        android:hint="0"
-        android:inputType="number"
-        android:paddingHorizontal="20dp"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radio_group_unit_type" />
-
-    <!-- Nova seção de Produção e Custos -->
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_own_production"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="24dp"
-        android:text="Produção Própria"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_product_stock" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_cost_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="16dp"
-        android:textColorHint="@color/gray_600"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_own_production">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_text_cost_price"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="?attr/editTextBackground"
-            android:hint="Custo de Aquisição (R$)"
-            android:inputType="numberDecimal"
-            android:paddingHorizontal="20dp"
-            android:textColor="?attr/colorOnSurface" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_manage_ingredients"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="0dp"
+            <!-- Campos de Entrada -->
+            <TextView
+                android:id="@+id/label_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="Nome do Produto"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/edit_text_product_name"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:background="?attr/editTextBackground"
+                android:hint="Ex: Maçã Gala"
+                android:inputType="textCapSentences"
+                android:paddingHorizontal="20dp"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_product_name" />
+
+            <TextView
+                android:id="@+id/label_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Preço (R$)"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_text_product_name" />
+
+            <EditText
+                android:id="@+id/edit_text_product_price"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:background="?attr/editTextBackground"
+                android:hint="0,00"
+                android:inputType="numberDecimal"
+                android:paddingHorizontal="20dp"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_product_price" />
+
+            <TextView
+                android:id="@+id/label_product_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Estoque"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_text_product_price" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_unit_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_product_stock">
+
+                <RadioButton
+                    android:id="@+id/radio_unidade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Unidade (Un)"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <RadioButton
+                    android:id="@+id/radio_peso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Peso (Kg/g)"
+                    android:textColor="?attr/colorOnSurface" />
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/edit_text_product_stock"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:background="?attr/editTextBackground"
+                android:hint="0"
+                android:inputType="number"
+                android:paddingHorizontal="20dp"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group_unit_type" />
+
+            <!-- Nova seção de Produção e Custos -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_own_production"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Produção Própria"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_text_product_stock" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_cost_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:textColorHint="@color/gray_600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switch_own_production">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_cost_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="?attr/editTextBackground"
+                    android:hint="Custo de Aquisição (R$)"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="20dp"
+                    android:textColor="?attr/colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_manage_ingredients"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:text="Gerenciar Insumos da Receita"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:icon="@drawable/ic_search"
+                app:iconGravity="textStart"
+                app:iconTint="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switch_own_production" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Rodapé de Botões Fixo -->
+    <LinearLayout
+        android:id="@+id/bottom_action_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:text="Gerenciar Insumos da Receita"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:icon="@drawable/ic_search"
-        app:iconGravity="textStart"
-        app:iconTint="?attr/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_own_production" />
-
-    <!-- Botões -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_save"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/green_500"
-        android:text="Salvar"
-        android:textColor="@color/white"
-        app:cornerRadius="16dp"
-        app:icon="@drawable/ic_save"
-        app:iconGravity="textStart"
-        app:layout_constraintBottom_toTopOf="@+id/button_delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_delete"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="24dp"
-        android:text="Excluir"
-        android:textColor="@color/red_500"
-        app:cornerRadius="16dp"
-        app:icon="@drawable/ic_delete"
-        app:iconGravity="textStart"
-        app:iconTint="@color/red_500"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp"
+        android:background="?attr/colorSurface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="@color/red_500"
-        app:strokeWidth="2dp" />
+        app:elevation="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:backgroundTint="@color/green_500"
+            android:text="Salvar"
+            android:textColor="@color/white"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_save"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_delete"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="8dp"
+            android:text="Excluir"
+            android:textColor="@color/red_500"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_delete"
+            app:iconGravity="textStart"
+            app:iconTint="@color/red_500"
+            app:strokeColor="@color/red_500"
+            app:strokeWidth="2dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

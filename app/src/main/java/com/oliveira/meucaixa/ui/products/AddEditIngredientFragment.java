@@ -29,6 +29,7 @@ public class AddEditIngredientFragment extends Fragment {
     private EditText editName;
     private EditText editPrice;
     private EditText editQuantity;
+    private EditText editCurrentStock;
     private Button buttonSave;
     private AddEditIngredientViewModel viewModel;
 
@@ -37,6 +38,11 @@ public class AddEditIngredientFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_add_edit_ingredient, container, false);
     }
+
+    private android.widget.TextView textTitle;
+    private Button buttonDelete;
+    private com.oliveira.meucaixa.data.model.Ingredient currentIngredient;
+    private long ingredientId = -1L;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -47,13 +53,17 @@ public class AddEditIngredientFragment extends Fragment {
         ImageButton buttonBack = view.findViewById(R.id.button_back);
         buttonBack.setOnClickListener(v -> navController.popBackStack());
         
+        textTitle = view.findViewById(R.id.text_title);
         editName = view.findViewById(R.id.edit_text_ingredient_name);
         editPrice = view.findViewById(R.id.edit_text_ingredient_price);
         editQuantity = view.findViewById(R.id.edit_text_ingredient_quantity);
+        editCurrentStock = view.findViewById(R.id.edit_text_ingredient_current_stock);
         buttonSave = view.findViewById(R.id.button_save);
+        buttonDelete = view.findViewById(R.id.button_delete);
         
         editPrice.addTextChangedListener(new com.oliveira.meucaixa.utils.MoneyTextWatcher(editPrice));
         editQuantity.addTextChangedListener(new com.oliveira.meucaixa.utils.WeightTextWatcher(editQuantity));
+        editCurrentStock.addTextChangedListener(new com.oliveira.meucaixa.utils.WeightTextWatcher(editCurrentStock));
 
         viewModel = new ViewModelProvider(this).get(AddEditIngredientViewModel.class);
 
@@ -61,9 +71,42 @@ public class AddEditIngredientFragment extends Fragment {
         setupValidation();
 
         buttonSave.setOnClickListener(v -> saveIngredient());
+        
+        buttonDelete.setOnClickListener(v -> {
+            if (currentIngredient != null) {
+                viewModel.deleteIngredient(currentIngredient);
+            }
+        });
+
+        setupInitialState();
+    }
+
+    private void setupInitialState() {
+        if (getArguments() != null) {
+            ingredientId = getArguments().getLong("ingredientId", -1L);
+        }
+
+        if (ingredientId != -1L) {
+            textTitle.setText("Editar Insumo");
+            buttonDelete.setVisibility(View.VISIBLE);
+            viewModel.fetchIngredient(ingredientId);
+        } else {
+            textTitle.setText("Cadastrar Insumo");
+            buttonDelete.setVisibility(View.GONE);
+        }
     }
 
     private void setupObservers() {
+        viewModel.getIngredient().observe(getViewLifecycleOwner(), ingredient -> {
+            if (ingredient != null) {
+                currentIngredient = ingredient;
+                editName.setText(ingredient.getName());
+                editPrice.setText(String.format(java.util.Locale.getDefault(), "%.2f", ingredient.getPackagePrice()));
+                editQuantity.setText(String.format(java.util.Locale.getDefault(), "%.3f", ingredient.getPackageQuantity()));
+                editCurrentStock.setText(String.format(java.util.Locale.getDefault(), "%.3f", ingredient.getCurrentStock()));
+            }
+        });
+
         viewModel.getSaveSuccessEvent().observe(getViewLifecycleOwner(), success -> {
             if (success) {
                 Toast.makeText(requireContext(), "Insumo salvo com sucesso!", Toast.LENGTH_SHORT).show();
@@ -80,8 +123,9 @@ public class AddEditIngredientFragment extends Fragment {
         String name = editName.getText().toString().trim();
         String priceText = editPrice.getText().toString().trim();
         String quantityText = editQuantity.getText().toString().trim();
+        String currentStockText = editCurrentStock.getText().toString().trim();
 
-        viewModel.saveIngredient(name, priceText, quantityText);
+        viewModel.saveIngredient(currentIngredient, name, priceText, quantityText, currentStockText);
     }
 
     private void setupValidation() {
@@ -99,6 +143,7 @@ public class AddEditIngredientFragment extends Fragment {
         editName.addTextChangedListener(validationWatcher);
         editPrice.addTextChangedListener(validationWatcher);
         editQuantity.addTextChangedListener(validationWatcher);
+        editCurrentStock.addTextChangedListener(validationWatcher);
 
         // Dispara a validação inicial para deixar o botão cinza
         validateSaveButton();

@@ -42,7 +42,22 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
         return saveErrorEvent;
     }
 
-    public void saveIngredient(String name, String priceText, String quantityText) {
+    private final MutableLiveData<Ingredient> ingredientLiveData = new MutableLiveData<>();
+
+    public LiveData<Ingredient> getIngredient() {
+        return ingredientLiveData;
+    }
+
+    public void fetchIngredient(long id) {
+        executorService.execute(() -> {
+            Ingredient ingredient = ingredientDao.getIngredientById(id);
+            if (ingredient != null) {
+                ingredientLiveData.postValue(ingredient);
+            }
+        });
+    }
+
+    public void saveIngredient(Ingredient currentIngredient, String name, String priceText, String quantityText, String currentStockText) {
         if (TextUtils.isEmpty(name)) {
             saveErrorEvent.setValue("Ingredient name cannot be empty.");
             return;
@@ -50,6 +65,7 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
 
         double price = 0.0;
         double quantity = 0.0;
+        double currentStock = 0.0;
 
         try {
             String cleanPrice = priceText.replaceAll("[^\\d]", "");
@@ -61,35 +77,47 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
             if (!cleanQuantity.isEmpty()) {
                 quantity = Double.parseDouble(cleanQuantity) / 1000.0;
             }
+
+            String cleanCurrentStock = currentStockText.replaceAll("[^\\d]", "");
+            if (!cleanCurrentStock.isEmpty()) {
+                currentStock = Double.parseDouble(cleanCurrentStock) / 1000.0;
+            }
         } catch (NumberFormatException e) {
             saveErrorEvent.setValue("Invalid number format.");
             return;
         }
 
-        if (price <= 0) {
-            saveErrorEvent.setValue("Price must be greater than zero.");
-            return;
-        }
-
-        if (quantity <= 0) {
-            saveErrorEvent.setValue("Quantity must be greater than zero.");
-            return;
-        }
-
-        Ingredient ingredient = new Ingredient();
+        Ingredient ingredient = currentIngredient != null ? currentIngredient : new Ingredient();
         ingredient.setUserId(userId);
         ingredient.setName(name);
         ingredient.setPackagePrice(price);
         ingredient.setPackageQuantity(quantity);
+        ingredient.setCurrentStock(currentStock);
         // By default, assuming "Kg/g" input maps to a standard unit, e.g., "Kg" for the base calculation context
         ingredient.setUnitOfMeasure("Kg/g");
 
         executorService.execute(() -> {
             try {
-                ingredientDao.insert(ingredient);
+                if (currentIngredient == null) {
+                    ingredientDao.insert(ingredient);
+                } else {
+                    ingredientDao.update(ingredient);
+                }
                 saveSuccessEvent.postValue(true);
             } catch (Exception e) {
                 saveErrorEvent.postValue("Error saving to database.");
+            }
+        });
+    }
+
+    public void deleteIngredient(Ingredient currentIngredient) {
+        if (currentIngredient == null) return;
+        executorService.execute(() -> {
+            try {
+                ingredientDao.delete(currentIngredient);
+                saveSuccessEvent.postValue(true);
+            } catch (Exception e) {
+                saveErrorEvent.postValue("Error deleting from database.");
             }
         });
     }

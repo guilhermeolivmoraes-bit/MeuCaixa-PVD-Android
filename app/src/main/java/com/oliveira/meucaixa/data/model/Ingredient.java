@@ -24,6 +24,9 @@ public class Ingredient {
     private double packagePrice;
     private double packageQuantity;
     private String unitOfMeasure;
+    
+    @ColumnInfo(name = "current_stock")
+    private double currentStock;
 
     // Getters and Setters
 
@@ -67,11 +70,15 @@ public class Ingredient {
         this.packageQuantity = packageQuantity;
     }
 
-    public String getUnitOfMeasure() {
-        return unitOfMeasure;
-    }
-
     public void setUnitOfMeasure(String unitOfMeasure) {
         this.unitOfMeasure = unitOfMeasure;
+    }
+
+    public double getCurrentStock() {
+        return currentStock;
+    }
+
+    public void setCurrentStock(double currentStock) {
+        this.currentStock = currentStock;
     }
 }

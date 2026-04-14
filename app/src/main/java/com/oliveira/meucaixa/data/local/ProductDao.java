@@ -27,7 +27,7 @@ public interface ProductDao {
     LiveData<Product> getById(long id, long userId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Product product);
+    long insert(Product product);
 
     @Update
     void update(Product product);

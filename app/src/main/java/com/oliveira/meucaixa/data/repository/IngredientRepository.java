@@ -21,8 +21,8 @@ public class IngredientRepository {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
-    public LiveData<List<Ingredient>> getAllIngredients() {
-        return ingredientDao.getAllIngredients();
+    public LiveData<List<Ingredient>> getAllIngredients(long userId) {
+        return ingredientDao.getAllIngredients(userId);
     }
 
     public void insert(Ingredient ingredient) {
