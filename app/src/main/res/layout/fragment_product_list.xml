@@ -40,12 +40,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/android:colorBackground"
-            app:tabIndicatorColor="@color/green_pastel_light"
+            app:tabIndicatorColor="?attr/colorPrimary"
             app:tabIndicatorHeight="3dp"
             app:tabIndicatorFullWidth="false"
             app:tabSelectedTextColor="?attr/colorOnSurface"
             app:tabTextColor="?attr/colorOnSurfaceVariant"
             app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <!-- Linha divisória do TabLayout -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/separatorColor" />
 
         <!-- ViewPager2 substitui a RecyclerView direta -->
         <androidx.viewpager2.widget.ViewPager2

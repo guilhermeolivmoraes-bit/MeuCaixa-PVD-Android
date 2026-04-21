@@ -7,6 +7,8 @@
     <!-- Soft UI (Pastéis) -->
     <!-- Unificamos a cor primária para manter a identidade em ambos os modos -->
     <color name="green_pastel">#A8E6CF</color>
+    <color name="green_pastel_light">#C8F0E0</color>
+    <color name="green_pastel_dark">#81C784</color>
     <color name="green_pastel_variant">#81C784</color>
     <color name="red_pastel">#FF8B94</color>
     <color name="red_pastel_dark">#E57373</color>
@@ -22,8 +24,8 @@
     <color name="card_light">#F5F5F5</color>
     
     <!-- Escuro: Preto escuro neutro. Adeus ao tom azulado. -->
-    <color name="background_dark">#121212</color>
-    <color name="card_dark">#1E1E1E</color>
+    <color name="background_dark">#000000</color>
+    <color name="card_dark">#151515</color>
 
     <!-- Tons de Cinza Neutros -->
     <color name="gray_200">#EEEEEE</color>

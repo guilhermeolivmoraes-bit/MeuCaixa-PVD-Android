@@ -70,7 +70,7 @@
                 android:hint="Ex: Maçã Gala"
                 android:inputType="textCapSentences"
                 android:paddingHorizontal="20dp"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="@color/edit_text_text_selector"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_product_name" />
@@ -97,7 +97,7 @@
                 android:hint="0,00"
                 android:inputType="numberDecimal"
                 android:paddingHorizontal="20dp"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="@color/edit_text_text_selector"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_product_price" />
@@ -151,7 +151,7 @@
                 android:hint="0"
                 android:inputType="number"
                 android:paddingHorizontal="20dp"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="@color/edit_text_text_selector"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radio_group_unit_type" />
@@ -189,7 +189,7 @@
                     android:hint="Custo de Aquisição (R$)"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="20dp"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="@color/edit_text_text_selector" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
