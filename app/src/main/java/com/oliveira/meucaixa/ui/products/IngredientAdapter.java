@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.oliveira.meucaixa.R;
-import com.oliveira.meucaixa.data.model.Ingredient;
+import com.oliveira.meucaixa.models.Ingredient;
 
 import java.util.List;
 import java.util.Locale;

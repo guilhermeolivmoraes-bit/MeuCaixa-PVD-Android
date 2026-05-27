@@ -1,21 +1,21 @@
-package com.oliveira.meucaixa.data.repository;
+package com.oliveira.meucaixa.services;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.IngredientDao;
-import com.oliveira.meucaixa.data.model.Ingredient;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.IngredientDao;
+import com.oliveira.meucaixa.models.Ingredient;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class IngredientRepository {
+public class IngredientService {
     private final IngredientDao ingredientDao;
     private final ExecutorService executorService;
 
-    public IngredientRepository(Application application) {
+    public IngredientService(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         this.ingredientDao = db.ingredientDao();
         this.executorService = Executors.newSingleThreadExecutor();

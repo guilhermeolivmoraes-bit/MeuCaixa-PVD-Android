@@ -1,8 +1,8 @@
 package com.oliveira.meucaixa.ui.dashboard;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.SaleDao;
-import com.oliveira.meucaixa.data.model.Sale;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.SaleDao;
+import com.oliveira.meucaixa.models.Sale;
 import com.oliveira.meucaixa.utils.SessionManager;
 
 import android.app.Application;

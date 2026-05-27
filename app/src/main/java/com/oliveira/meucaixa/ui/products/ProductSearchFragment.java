@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.oliveira.meucaixa.R;
-import com.oliveira.meucaixa.data.model.Product;
+import com.oliveira.meucaixa.models.Product;
 import com.oliveira.meucaixa.ui.sales.NewSaleViewModel; // Will reuse the sale view model for search query
 
 import java.util.ArrayList;

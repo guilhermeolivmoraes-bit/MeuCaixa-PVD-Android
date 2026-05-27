@@ -1,13 +1,13 @@
-package com.oliveira.meucaixa.data.repository;
+package com.oliveira.meucaixa.repositories;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.ProductDao;
-import com.oliveira.meucaixa.data.local.ProductIngredientDao;
-import com.oliveira.meucaixa.data.model.Product;
-import com.oliveira.meucaixa.data.model.ProductIngredient;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.ProductDao;
+import com.oliveira.meucaixa.database.ProductIngredientDao;
+import com.oliveira.meucaixa.models.Product;
+import com.oliveira.meucaixa.models.ProductIngredient;
 
 import java.util.List;
 import java.util.Set;

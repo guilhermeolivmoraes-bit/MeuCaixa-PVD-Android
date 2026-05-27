@@ -1,8 +1,8 @@
 package com.oliveira.meucaixa.ui.sales;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.SaleDao;
-import com.oliveira.meucaixa.data.model.Sale;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.SaleDao;
+import com.oliveira.meucaixa.models.Sale;
 import com.oliveira.meucaixa.utils.SessionManager;
 
 import android.app.Application;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ReportsViewModel extends AndroidViewModel {
 
     private final SaleDao saleDao;
-    private final com.oliveira.meucaixa.data.local.ReportsDao reportsDao;
+    private final com.oliveira.meucaixa.database.ReportsDao reportsDao;
     private final long userId;
 
     public ReportsViewModel(Application application) {

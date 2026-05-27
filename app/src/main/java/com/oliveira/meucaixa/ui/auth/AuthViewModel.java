@@ -1,8 +1,8 @@
 package com.oliveira.meucaixa.ui.auth;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.UserDao;
-import com.oliveira.meucaixa.data.model.User;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.UserDao;
+import com.oliveira.meucaixa.models.User;
 
 import android.app.Application;
 import android.content.SharedPreferences;

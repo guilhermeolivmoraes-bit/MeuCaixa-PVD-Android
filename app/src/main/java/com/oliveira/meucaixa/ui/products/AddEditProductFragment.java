@@ -1,7 +1,7 @@
 package com.oliveira.meucaixa.ui.products;
 
 import com.oliveira.meucaixa.R;
-import com.oliveira.meucaixa.data.model.Product;
+import com.oliveira.meucaixa.models.Product;
 import com.oliveira.meucaixa.utils.MoneyTextWatcher;
 
 import android.os.Bundle;

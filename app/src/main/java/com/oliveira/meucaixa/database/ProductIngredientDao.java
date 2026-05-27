@@ -1,4 +1,4 @@
-package com.oliveira.meucaixa.data.local;
+package com.oliveira.meucaixa.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -9,8 +9,8 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.oliveira.meucaixa.data.model.ProductIngredient;
-import com.oliveira.meucaixa.data.model.RecipeIngredientDetail;
+import com.oliveira.meucaixa.models.ProductIngredient;
+import com.oliveira.meucaixa.models.RecipeIngredientDetail;
 
 import java.util.List;
 

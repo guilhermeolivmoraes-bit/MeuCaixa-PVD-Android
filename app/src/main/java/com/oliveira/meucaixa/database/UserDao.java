@@ -1,11 +1,11 @@
-package com.oliveira.meucaixa.data.local;
+package com.oliveira.meucaixa.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.oliveira.meucaixa.data.model.User;
+import com.oliveira.meucaixa.models.User;
 
 @Dao
 public interface UserDao {

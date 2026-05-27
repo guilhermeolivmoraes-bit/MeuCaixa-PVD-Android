@@ -41,7 +41,7 @@ public class AddEditIngredientFragment extends Fragment {
 
     private android.widget.TextView textTitle;
     private Button buttonDelete;
-    private com.oliveira.meucaixa.data.model.Ingredient currentIngredient;
+    private com.oliveira.meucaixa.models.Ingredient currentIngredient;
     private long ingredientId = -1L;
 
     @Override

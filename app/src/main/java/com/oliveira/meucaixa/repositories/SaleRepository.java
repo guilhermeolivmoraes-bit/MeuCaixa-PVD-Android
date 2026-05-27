@@ -1,18 +1,18 @@
-package com.oliveira.meucaixa.data.repository;
+package com.oliveira.meucaixa.repositories;
 
 import android.app.Application;
 import android.util.Log;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.IngredientDao;
-import com.oliveira.meucaixa.data.local.ProductDao;
-import com.oliveira.meucaixa.data.local.ProductIngredientDao;
-import com.oliveira.meucaixa.data.local.SaleDao;
-import com.oliveira.meucaixa.data.model.Ingredient;
-import com.oliveira.meucaixa.data.model.Product;
-import com.oliveira.meucaixa.data.model.ProductIngredient;
-import com.oliveira.meucaixa.data.model.Sale;
-import com.oliveira.meucaixa.data.model.SaleItem;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.IngredientDao;
+import com.oliveira.meucaixa.database.ProductDao;
+import com.oliveira.meucaixa.database.ProductIngredientDao;
+import com.oliveira.meucaixa.database.SaleDao;
+import com.oliveira.meucaixa.models.Ingredient;
+import com.oliveira.meucaixa.models.Product;
+import com.oliveira.meucaixa.models.ProductIngredient;
+import com.oliveira.meucaixa.models.Sale;
+import com.oliveira.meucaixa.models.SaleItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.oliveira.meucaixa.data.local;
+package com.oliveira.meucaixa.database;
 
 import android.content.Context;
 import androidx.room.Database;
@@ -7,13 +7,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.oliveira.meucaixa.data.model.User;
-import com.oliveira.meucaixa.data.model.Product;
-import com.oliveira.meucaixa.data.model.Sale;
-import com.oliveira.meucaixa.data.model.SaleItem;
+import com.oliveira.meucaixa.models.User;
+import com.oliveira.meucaixa.models.Product;
+import com.oliveira.meucaixa.models.Sale;
+import com.oliveira.meucaixa.models.SaleItem;
 
-import com.oliveira.meucaixa.data.model.Ingredient;
-import com.oliveira.meucaixa.data.model.ProductIngredient;
+import com.oliveira.meucaixa.models.Ingredient;
+import com.oliveira.meucaixa.models.ProductIngredient;
 
 @Database(entities = {User.class, Product.class, Sale.class, SaleItem.class, Ingredient.class, ProductIngredient.class}, version = 11, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {

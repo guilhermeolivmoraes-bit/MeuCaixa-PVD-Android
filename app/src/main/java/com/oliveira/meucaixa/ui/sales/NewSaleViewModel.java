@@ -1,10 +1,10 @@
 package com.oliveira.meucaixa.ui.sales;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.ProductDao;
-import com.oliveira.meucaixa.data.model.Product;
-import com.oliveira.meucaixa.data.model.SaleItem;
-import com.oliveira.meucaixa.data.repository.SaleRepository;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.ProductDao;
+import com.oliveira.meucaixa.models.Product;
+import com.oliveira.meucaixa.models.SaleItem;
+import com.oliveira.meucaixa.services.SaleService;
 import com.oliveira.meucaixa.utils.SessionManager;
 
 import android.app.Application;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class NewSaleViewModel extends AndroidViewModel {
     private final ProductDao productDao;
-    private final SaleRepository saleRepository;
+    private final SaleService saleService;
     private final long userId;
 
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>();
@@ -35,7 +35,7 @@ public class NewSaleViewModel extends AndroidViewModel {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         this.productDao = db.productDao();
-        this.saleRepository = new SaleRepository(application);
+        this.saleService = new SaleService(application);
 
         SessionManager sessionManager = new SessionManager(application);
         this.userId = sessionManager.getLoggedInUserId();
@@ -94,7 +94,7 @@ public class NewSaleViewModel extends AndroidViewModel {
         // Obter de forma síncrona/segura os itens ANTES de pular para a thread de background
         List<SaleItem> frozenCartItems = getCartItemsAsList();
         
-        saleRepository.processCheckoutAsync(userId, totalValue, totalCost, frozenCartItems, () -> {
+        saleService.processCheckoutAsync(userId, totalValue, totalCost, frozenCartItems, () -> {
             cartMap.clear();
             Log.d("CheckoutFlow", "Carrinho limpo após Checkout de Sucesso.");
         });

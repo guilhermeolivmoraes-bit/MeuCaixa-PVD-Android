@@ -33,8 +33,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import androidx.lifecycle.ViewModelProvider;
-import com.oliveira.meucaixa.data.model.Ingredient;
-import com.oliveira.meucaixa.data.model.ProductIngredient;
+import com.oliveira.meucaixa.models.Ingredient;
+import com.oliveira.meucaixa.models.ProductIngredient;
 import com.oliveira.meucaixa.utils.WeightTextWatcher;
 
 public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {

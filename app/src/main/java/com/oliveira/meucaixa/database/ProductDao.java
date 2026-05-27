@@ -1,4 +1,4 @@
-package com.oliveira.meucaixa.data.local;
+package com.oliveira.meucaixa.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.oliveira.meucaixa.data.model.Product;
+import com.oliveira.meucaixa.models.Product;
 
 import java.util.List;
 

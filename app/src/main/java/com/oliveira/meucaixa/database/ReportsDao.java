@@ -1,4 +1,4 @@
-package com.oliveira.meucaixa.data.local;
+package com.oliveira.meucaixa.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

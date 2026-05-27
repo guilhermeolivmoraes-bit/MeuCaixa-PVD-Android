@@ -8,9 +8,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.oliveira.meucaixa.data.local.AppDatabase;
-import com.oliveira.meucaixa.data.local.IngredientDao;
-import com.oliveira.meucaixa.data.model.Ingredient;
+import com.oliveira.meucaixa.database.AppDatabase;
+import com.oliveira.meucaixa.database.IngredientDao;
+import com.oliveira.meucaixa.models.Ingredient;
 import com.oliveira.meucaixa.utils.SessionManager;
 
 import java.util.concurrent.ExecutorService;

@@ -1,4 +1,4 @@
-package com.oliveira.meucaixa.data.model;
+package com.oliveira.meucaixa.models;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;

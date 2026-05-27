@@ -1,7 +1,7 @@
 package com.oliveira.meucaixa.ui.dashboard;
 
 import com.oliveira.meucaixa.R;
-import com.oliveira.meucaixa.data.model.Sale;
+import com.oliveira.meucaixa.models.Sale;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

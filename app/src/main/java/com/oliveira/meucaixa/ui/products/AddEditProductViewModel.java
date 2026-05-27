@@ -7,11 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.oliveira.meucaixa.data.model.Ingredient;
-import com.oliveira.meucaixa.data.model.Product;
-import com.oliveira.meucaixa.data.model.ProductIngredient;
-import com.oliveira.meucaixa.data.repository.IngredientRepository;
-import com.oliveira.meucaixa.data.repository.ProductRepository;
+import com.oliveira.meucaixa.models.Ingredient;
+import com.oliveira.meucaixa.models.Product;
+import com.oliveira.meucaixa.models.ProductIngredient;
+import com.oliveira.meucaixa.services.IngredientService;
+import com.oliveira.meucaixa.services.ProductService;
 import com.oliveira.meucaixa.utils.SessionManager;
 
 import java.util.HashSet;
@@ -20,8 +20,8 @@ import java.util.Set;
 
 public class AddEditProductViewModel extends AndroidViewModel {
 
-    private final ProductRepository productRepository;
-    private final IngredientRepository ingredientRepository;
+    private final ProductService productService;
+    private final IngredientService ingredientService;
     private final long userId;
 
     // In-memory Set collection to guarantee uniqueness of ingredients in the recipe
@@ -38,13 +38,13 @@ public class AddEditProductViewModel extends AndroidViewModel {
 
     public AddEditProductViewModel(Application application) {
         super(application);
-        productRepository = new ProductRepository(application);
-        ingredientRepository = new IngredientRepository(application);
+        productService = new ProductService(application);
+        ingredientService = new IngredientService(application);
 
         SessionManager sessionManager = new SessionManager(application);
         userId = sessionManager.getLoggedInUserId();
 
-        allIngredientsLiveData = ingredientRepository.getAllIngredients(userId);
+        allIngredientsLiveData = ingredientService.getAllIngredients(userId);
         allIngredientsLiveData.observeForever(ingredientsObserver);
     }
 
@@ -63,11 +63,11 @@ public class AddEditProductViewModel extends AndroidViewModel {
     }
 
     public LiveData<Product> getProductById(long productId) {
-        return productRepository.getProductById(productId, userId);
+        return productService.getProductById(productId, userId);
     }
 
     public LiveData<List<ProductIngredient>> getIngredientsForProduct(long productId) {
-        return productRepository.getIngredientsForProduct(productId);
+        return productService.getIngredientsForProduct(productId);
     }
 
     public void loadRecipe(List<ProductIngredient> existing) {
@@ -133,18 +133,18 @@ public class AddEditProductViewModel extends AndroidViewModel {
     public void saveProduct(Product product) {
         product.setUserId(userId);
         if (product.getId() == 0) {
-            productRepository.saveProductWithIngredients(product, recipeIngredients);
+            productService.saveProductWithIngredients(product, recipeIngredients);
         } else {
-            productRepository.updateProductWithIngredients(product, recipeIngredients);
+            productService.updateProductWithIngredients(product, recipeIngredients);
         }
     }
 
     public void updateProduct(Product product) {
-        productRepository.updateProduct(product);
+        productService.updateProduct(product);
     }
 
     public void deleteProduct(Product product) {
         product.setStock(0.0);
-        productRepository.updateProduct(product);
+        productService.updateProduct(product);
     }
 }

@@ -1,6 +1,6 @@
-package com.oliveira.meucaixa.ui.sales;
+package com.oliveira.meucaixa.models;
 
-import com.oliveira.meucaixa.data.model.Product;
+import com.oliveira.meucaixa.models.Product;
 
 /**
  * Represents an item inside the shopping cart UI.

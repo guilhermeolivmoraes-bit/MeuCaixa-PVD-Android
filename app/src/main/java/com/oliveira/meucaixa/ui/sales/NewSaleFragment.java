@@ -1,7 +1,7 @@
 package com.oliveira.meucaixa.ui.sales;
 
 import com.oliveira.meucaixa.R;
-import com.oliveira.meucaixa.data.model.Product;
+import com.oliveira.meucaixa.models.Product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -87,7 +87,7 @@ public class NewSaleFragment extends Fragment {
 
             @Override
             public void onItemDeleted(int position) {
-                List<com.oliveira.meucaixa.data.model.SaleItem> items = newSaleViewModel.getCartItemsAsList();
+                List<com.oliveira.meucaixa.models.SaleItem> items = newSaleViewModel.getCartItemsAsList();
                 if (position >= 0 && position < items.size()) {
                     long productId = items.get(position).getProductId();
                     newSaleViewModel.removeItemFromCart(productId);
@@ -131,7 +131,7 @@ public class NewSaleFragment extends Fragment {
     }
 
     private void finalizeSale() {
-        List<com.oliveira.meucaixa.data.model.SaleItem> items = newSaleViewModel.getCartItemsAsList();
+        List<com.oliveira.meucaixa.models.SaleItem> items = newSaleViewModel.getCartItemsAsList();
         if (items.isEmpty()) {
             Toast.makeText(getContext(), "O carrinho está vazio", Toast.LENGTH_SHORT).show();
             return;
@@ -141,7 +141,7 @@ public class NewSaleFragment extends Fragment {
         double totalCost = 0; // Assuming we would calculate this based on Product's costPrice.
         
         // As a simplification due to the transition, we calculate total price here.
-        for (com.oliveira.meucaixa.data.model.SaleItem item : items) {
+        for (com.oliveira.meucaixa.models.SaleItem item : items) {
             totalValue += (item.getProductPrice() * item.getQuantity());
             // Optionally, accumulate total cost if available.
         }
@@ -152,7 +152,7 @@ public class NewSaleFragment extends Fragment {
     }
 
     private void updateCartUI() {
-        List<com.oliveira.meucaixa.data.model.SaleItem> currentItems = newSaleViewModel.getCartItemsAsList();
+        List<com.oliveira.meucaixa.models.SaleItem> currentItems = newSaleViewModel.getCartItemsAsList();
         
         cartAdapter = new CartAdapter(currentItems, new CartAdapter.OnSaleItemChangeListener() {
             @Override
@@ -187,7 +187,7 @@ public class NewSaleFragment extends Fragment {
         }
 
         double total = 0;
-        for (com.oliveira.meucaixa.data.model.SaleItem item : currentItems) {
+        for (com.oliveira.meucaixa.models.SaleItem item : currentItems) {
             total += (item.getProductPrice() * item.getQuantity());
         }
         textTotalValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
