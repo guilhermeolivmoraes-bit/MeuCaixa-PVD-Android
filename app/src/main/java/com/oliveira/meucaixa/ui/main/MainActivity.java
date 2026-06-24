@@ -30,10 +30,8 @@ public class MainActivity extends AppCompatActivity {
                 destination.getId() == R.id.loginFragment || 
                 destination.getId() == R.id.signUpFragment) {
                 bottomNav.setVisibility(View.GONE);
-                findViewById(R.id.divider_view).setVisibility(View.GONE);
             } else {
                 bottomNav.setVisibility(View.VISIBLE);
-                findViewById(R.id.divider_view).setVisibility(View.VISIBLE);
             }
         });
         

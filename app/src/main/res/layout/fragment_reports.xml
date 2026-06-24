@@ -66,14 +66,6 @@
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="16sp"
                         android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/icon_edit_sales"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_edit"
-                        android:alpha="0.4"
-                        app:tint="?attr/colorOnSurface" />
                 </LinearLayout>
 
                 <TextView

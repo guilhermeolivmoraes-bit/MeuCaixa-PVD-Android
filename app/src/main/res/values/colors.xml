@@ -4,12 +4,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Soft UI (Pastéis) -->
+    <!-- Soft UI (Vibrante) -->
     <!-- Unificamos a cor primária para manter a identidade em ambos os modos -->
-    <color name="green_pastel">#A8E6CF</color>
-    <color name="green_pastel_light">#C8F0E0</color>
-    <color name="green_pastel_dark">#81C784</color>
-    <color name="green_pastel_variant">#81C784</color>
+    <color name="green_primary">#26C281</color>
+    <color name="green_primary_light">#D1FAE5</color>
+    <color name="green_primary_dark">#059669</color>
+
+    <color name="green_pastel">@color/green_primary_light</color>
+    <color name="green_pastel_light">@color/green_primary_light</color>
+    <color name="green_pastel_dark">@color/green_primary</color>
+    <color name="green_pastel_variant">@color/green_primary</color>
     <color name="red_pastel">#FF8B94</color>
     <color name="red_pastel_dark">#E57373</color>
 
