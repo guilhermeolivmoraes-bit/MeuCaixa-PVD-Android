@@ -1,22 +1,19 @@
-# Build artifacts
-.gradle
-/local.properties
-/build
-/captures
-.externalNativeBuild
-.cxx
+# --- Build & Output ---
+.gradle/
+build/
+/*/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aar
 
-# Android Studio / IntelliJ IDEA
+# --- IDE & Editor Settings ---
+# IntelliJ / Android Studio
 .idea/
 *.iml
 *.iws
 *.ipr
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 
 # VS Code
 .vscode/
@@ -24,6 +21,14 @@
 # Antigravity
 .artifacts/
 
-# System files
+# --- Local & Sensitive Files (SECURITY) ---
+/local.properties
+secrets.properties
+*.jks
+*.keystore
+google-services.json
+
+# --- OS Specific & Logs ---
 .DS_Store
 Thumbs.db
+*.log
