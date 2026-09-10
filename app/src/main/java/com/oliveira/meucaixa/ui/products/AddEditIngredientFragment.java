@@ -168,9 +168,6 @@ public class AddEditIngredientFragment extends Fragment {
 
         if (buttonSave != null) {
             buttonSave.setEnabled(isValid);
-            buttonSave.setBackgroundColor(isValid ? 
-                ContextCompat.getColor(requireContext(), R.color.green_500) : 
-                ContextCompat.getColor(requireContext(), R.color.gray_400));
         }
     }
 }

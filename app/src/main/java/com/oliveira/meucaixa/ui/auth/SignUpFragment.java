@@ -88,6 +88,5 @@ public class SignUpFragment extends Fragment {
         boolean isEnabled = !TextUtils.isEmpty(nome) && dob.length() == 10;
 
         buttonConfirm.setEnabled(isEnabled);
-        buttonConfirm.setBackgroundColor(isEnabled ? ContextCompat.getColor(getContext(), R.color.green_500) : ContextCompat.getColor(getContext(), R.color.gray_400));
     }
 }

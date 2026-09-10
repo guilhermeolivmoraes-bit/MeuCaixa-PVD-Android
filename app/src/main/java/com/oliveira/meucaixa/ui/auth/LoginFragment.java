@@ -5,6 +5,7 @@ import com.oliveira.meucaixa.utils.DateMaskTextWatcher;
 
 // A importação da classe R não é mais necessária, pois o namespace do Gradle foi corrigido.
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class LoginFragment extends Fragment {
         textGreeting = view.findViewById(R.id.text_greeting);
         buttonConfirm = view.findViewById(R.id.button_confirm_login);
         buttonSwitchUser = view.findViewById(R.id.button_switch_user);
+        buttonSwitchUser.setPaintFlags(buttonSwitchUser.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         signUpPromptContainer = view.findViewById(R.id.signup_prompt_container);
         buttonSignUpPrompt = view.findViewById(R.id.button_signup_prompt);
         editTextDob.addTextChangedListener(new DateMaskTextWatcher(editTextDob));

@@ -184,7 +184,6 @@ public class AddEditProductFragment extends Fragment {
         }
 
         buttonSave.setEnabled(isStockValid);
-        buttonSave.setBackgroundColor(isStockValid ? ContextCompat.getColor(requireContext(), R.color.green_500) : ContextCompat.getColor(requireContext(), R.color.gray_400));
     }
 
     private void saveProduct() {

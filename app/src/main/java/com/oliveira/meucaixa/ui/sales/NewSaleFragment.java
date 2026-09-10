@@ -176,15 +176,6 @@ public class NewSaleFragment extends Fragment {
         cartRecyclerView.setVisibility(isCartEmpty ? View.GONE : View.VISIBLE);
 
         buttonFinalizeSale.setEnabled(!isCartEmpty);
-        if (isCartEmpty) {
-            buttonFinalizeSale.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray_400));
-        } else {
-            buttonFinalizeSale.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green_500));
-            int textColor = (getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-                    ? ContextCompat.getColor(getContext(), R.color.black)
-                    : ContextCompat.getColor(getContext(), R.color.white);
-            buttonFinalizeSale.setTextColor(textColor);
-        }
 
         double total = 0;
         for (com.oliveira.meucaixa.models.SaleItem item : currentItems) {
