@@ -27,6 +27,17 @@ public class SaleService {
     private final ProductIngredientDao productIngredientDao;
     private final ExecutorService executorService;
 
+
+    // Construtor para testes unitários
+    public SaleService(AppDatabase db, SaleDao saleDao, ProductDao productDao, IngredientDao ingredientDao, ProductIngredientDao productIngredientDao, ExecutorService executorService) {
+        this.db = db;
+        this.saleDao = saleDao;
+        this.productDao = productDao;
+        this.ingredientDao = ingredientDao;
+        this.productIngredientDao = productIngredientDao;
+        this.executorService = executorService;
+    }
+
     public SaleService(Application application) {
         db = AppDatabase.getDatabase(application);
         saleDao = db.saleDao();
