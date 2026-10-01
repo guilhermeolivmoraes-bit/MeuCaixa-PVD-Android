@@ -13,6 +13,8 @@ import com.oliveira.meucaixa.database.IngredientDao;
 import com.oliveira.meucaixa.models.Ingredient;
 import com.oliveira.meucaixa.utils.SessionManager;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -63,14 +65,14 @@ public class AddEditIngredientViewModel extends AndroidViewModel {
             return;
         }
 
-        double price = 0.0;
+        BigDecimal price = BigDecimal.ZERO;
         double quantity = 0.0;
         double currentStock = 0.0;
 
         try {
             String cleanPrice = priceText.replaceAll("[^\\d]", "");
             if (!cleanPrice.isEmpty()) {
-                price = Double.parseDouble(cleanPrice) / 100.0;
+                price = new BigDecimal(cleanPrice).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
             }
 
             String cleanQuantity = quantityText.replaceAll("[^\\d]", "");

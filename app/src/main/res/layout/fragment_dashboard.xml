@@ -63,6 +63,7 @@
                 android:padding="16dp">
 
                 <ImageView
+        android:contentDescription="Imagem"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_shopping_cart"
@@ -98,6 +99,7 @@
                 android:padding="16dp">
 
                 <ImageView
+        android:contentDescription="Imagem"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_products"
@@ -189,6 +191,7 @@
             android:paddingVertical="20dp">
 
             <ImageView
+        android:contentDescription="Imagem"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_reports"
@@ -205,6 +208,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+        android:contentDescription="Imagem"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_chevron_right"

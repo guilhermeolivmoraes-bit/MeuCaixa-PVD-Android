@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,7 +76,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             } else {
                 quantity.setText(String.format(Locale.getDefault(), "%.3f", q));
             }
-            totalPrice.setText(String.format(Locale.getDefault(), "R$ %.2f", saleItem.getProductPrice() * saleItem.getQuantity()));
+            totalPrice.setText(String.format(Locale.getDefault(), "R$ %.2f", saleItem.getProductPrice().multiply(BigDecimal.valueOf(saleItem.getQuantity()))));
 
             increase.setOnClickListener(v -> {
                 saleItem.setQuantity(saleItem.getQuantity() + 1);

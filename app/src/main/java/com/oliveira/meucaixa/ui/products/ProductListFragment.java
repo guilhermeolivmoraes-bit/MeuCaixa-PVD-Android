@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.oliveira.meucaixa.models.Product;
 
 import java.util.ArrayList;
 
@@ -59,10 +60,18 @@ public class ProductListFragment extends Fragment {
     }
 
     private void setupAdapters() {
-        productAdapter = new ProductAdapter(new ArrayList<>(), product -> {
-            Bundle bundle = new Bundle();
-            bundle.putLong("productId", product.getId());
-            navController.navigate(R.id.action_global_to_addEditProduct, bundle);
+        productAdapter = new ProductAdapter(new ArrayList<>(), new ProductAdapter.OnProductClickListener() {
+            @Override
+            public void onProductClick(Product product) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("productId", product.getId());
+                navController.navigate(R.id.action_global_to_addEditProduct, bundle);
+            }
+
+            @Override
+            public void onProductDelete(Product product) {
+                productListViewModel.deleteProduct(product);
+            }
         });
         
         ingredientAdapter = new IngredientAdapter(new ArrayList<>(), ingredient -> {

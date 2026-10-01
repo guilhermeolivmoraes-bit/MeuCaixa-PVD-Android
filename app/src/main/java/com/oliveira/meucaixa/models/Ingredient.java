@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import java.math.BigDecimal;
 
 @Entity(tableName = "ingredients",
         foreignKeys = @ForeignKey(entity = User.class,
@@ -21,7 +22,7 @@ public class Ingredient {
     private long userId;
 
     private String name;
-    private double packagePrice;
+    private BigDecimal packagePrice;
     private double packageQuantity;
     private String unitOfMeasure;
     
@@ -54,11 +55,11 @@ public class Ingredient {
         this.name = name;
     }
 
-    public double getPackagePrice() {
+    public BigDecimal getPackagePrice() {
         return packagePrice;
     }
 
-    public void setPackagePrice(double packagePrice) {
+    public void setPackagePrice(BigDecimal packagePrice) {
         this.packagePrice = packagePrice;
     }
 

@@ -61,10 +61,18 @@
             android:layout_weight="1"
             android:layout_marginTop="8dp" />
 
+        <include
+            android:id="@+id/empty_state_view"
+            layout="@layout/layout_empty_state"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
     <!-- Botão de Adicionar (FAB) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:contentDescription="Adicionar"
         android:id="@+id/fab_add_product"
         style="@style/MyFloatingActionButton"
         android:layout_width="wrap_content"

@@ -27,6 +27,7 @@
         android:layout_marginBottom="32dp" />
 
     <ImageView
+        android:contentDescription="Imagem"
         android:id="@+id/logo_welcome"
         android:layout_width="120dp"
         android:layout_height="120dp"

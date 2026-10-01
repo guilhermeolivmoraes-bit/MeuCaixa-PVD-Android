@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public interface OnProductClickListener {
         void onProductClick(Product product);
+        void onProductDelete(Product product);
     }
 
     public ProductAdapter(List<Product> products, OnProductClickListener listener) {
@@ -81,7 +84,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 stock.setText(stockStr);
 
                 if (product.getStock() <= 5) { 
-                    stock.setTextColor(Color.RED);
+                    stock.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red_pastel_dark));
                     stockWarningIcon.setVisibility(View.VISIBLE);
                 } else {
                     stock.setTextColor(Color.GRAY);
@@ -91,9 +94,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
             itemView.findViewById(R.id.btn_edit).setOnClickListener(v -> listener.onProductClick(product));
             
-            // TODO: Call listener.onProductDelete(product) in the future to show confirmation dialog
             itemView.findViewById(R.id.btn_delete).setOnClickListener(v -> {
-                // By default, do nothing until ProductListFragment implements delete interface
+                new AlertDialog.Builder(itemView.getContext())
+                        .setTitle("Excluir Produto")
+                        .setMessage("Tem certeza que deseja excluir o produto '" + product.getName() + "'?\nEsta ação apagará o produto e suas receitas associadas.")
+                        .setPositiveButton("Excluir", (dialog, which) -> {
+                            listener.onProductDelete(product);
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
             });
         }
     }

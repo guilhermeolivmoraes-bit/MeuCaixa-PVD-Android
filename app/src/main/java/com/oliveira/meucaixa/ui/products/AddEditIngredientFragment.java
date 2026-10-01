@@ -14,14 +14,23 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.oliveira.meucaixa.R;
+import com.oliveira.meucaixa.models.Ingredient;
+import com.oliveira.meucaixa.utils.MoneyTextWatcher;
+import com.oliveira.meucaixa.utils.WeightTextWatcher;
 
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
-import androidx.core.content.ContextCompat;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Locale;
 
 public class AddEditIngredientFragment extends Fragment {
 
@@ -30,6 +39,8 @@ public class AddEditIngredientFragment extends Fragment {
     private EditText editPrice;
     private EditText editQuantity;
     private EditText editCurrentStock;
+    private TextInputLayout layoutName, layoutPrice, layoutQuantity, layoutCurrentStock;
+    private TextView textTitle, textSaveHint;
     private Button buttonSave;
     private AddEditIngredientViewModel viewModel;
 
@@ -38,10 +49,8 @@ public class AddEditIngredientFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_add_edit_ingredient, container, false);
     }
-
-    private android.widget.TextView textTitle;
     private Button buttonDelete;
-    private com.oliveira.meucaixa.models.Ingredient currentIngredient;
+    private Ingredient currentIngredient;
     private long ingredientId = -1L;
 
     @Override
@@ -51,9 +60,16 @@ public class AddEditIngredientFragment extends Fragment {
         navController = Navigation.findNavController(view);
 
         ImageButton buttonBack = view.findViewById(R.id.button_back);
-        buttonBack.setOnClickListener(v -> navController.popBackStack());
+        buttonBack.setOnClickListener(v -> confirmExit());
         
         textTitle = view.findViewById(R.id.text_title);
+        textSaveHint = view.findViewById(R.id.text_save_hint);
+        
+        layoutName = view.findViewById(R.id.layout_ingredient_name);
+        layoutPrice = view.findViewById(R.id.layout_ingredient_price);
+        layoutQuantity = view.findViewById(R.id.layout_ingredient_quantity);
+        layoutCurrentStock = view.findViewById(R.id.layout_ingredient_current_stock);
+        
         editName = view.findViewById(R.id.edit_text_ingredient_name);
         editPrice = view.findViewById(R.id.edit_text_ingredient_price);
         editQuantity = view.findViewById(R.id.edit_text_ingredient_quantity);
@@ -61,9 +77,9 @@ public class AddEditIngredientFragment extends Fragment {
         buttonSave = view.findViewById(R.id.button_save);
         buttonDelete = view.findViewById(R.id.button_delete);
         
-        editPrice.addTextChangedListener(new com.oliveira.meucaixa.utils.MoneyTextWatcher(editPrice));
-        editQuantity.addTextChangedListener(new com.oliveira.meucaixa.utils.WeightTextWatcher(editQuantity));
-        editCurrentStock.addTextChangedListener(new com.oliveira.meucaixa.utils.WeightTextWatcher(editCurrentStock));
+        editPrice.addTextChangedListener(new MoneyTextWatcher(editPrice));
+        editQuantity.addTextChangedListener(new WeightTextWatcher(editQuantity));
+        editCurrentStock.addTextChangedListener(new WeightTextWatcher(editCurrentStock));
 
         viewModel = new ViewModelProvider(this).get(AddEditIngredientViewModel.class);
 
@@ -74,11 +90,39 @@ public class AddEditIngredientFragment extends Fragment {
         
         buttonDelete.setOnClickListener(v -> {
             if (currentIngredient != null) {
-                viewModel.deleteIngredient(currentIngredient);
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Excluir Insumo")
+                        .setMessage("Tem certeza que deseja excluir o insumo '" + currentIngredient.getName() + "'?\n\nIsso pode afetar em cascata as receitas de produtos que o utilizam.")
+                        .setPositiveButton("Excluir", (dialog, which) -> {
+                            viewModel.deleteIngredient(currentIngredient);
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
             }
         });
 
         setupInitialState();
+        setupBackNavigation();
+    }
+
+    private void setupBackNavigation() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                confirmExit();
+            }
+        });
+    }
+
+    private void confirmExit() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Descartar rascunho?")
+                .setMessage("Você tem alterações não salvas. Se você sair agora, os dados preenchidos serão perdidos.")
+                .setPositiveButton("Sair", (dialog, which) -> {
+                    navController.popBackStack();
+                })
+                .setNegativeButton("Continuar Editando", null)
+                .show();
     }
 
     private void setupInitialState() {
@@ -101,28 +145,50 @@ public class AddEditIngredientFragment extends Fragment {
             if (ingredient != null) {
                 currentIngredient = ingredient;
                 editName.setText(ingredient.getName());
-                editPrice.setText(String.format(java.util.Locale.getDefault(), "%.2f", ingredient.getPackagePrice()));
-                editQuantity.setText(String.format(java.util.Locale.getDefault(), "%.3f", ingredient.getPackageQuantity()));
-                editCurrentStock.setText(String.format(java.util.Locale.getDefault(), "%.3f", ingredient.getCurrentStock()));
+                editPrice.setText(String.format(Locale.getDefault(), "%.2f", ingredient.getPackagePrice()));
+                editQuantity.setText(String.format(Locale.getDefault(), "%.3f", ingredient.getPackageQuantity()));
+                editCurrentStock.setText(String.format(Locale.getDefault(), "%.3f", ingredient.getCurrentStock()));
             }
         });
 
         viewModel.getSaveSuccessEvent().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                Toast.makeText(requireContext(), "Insumo salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                // Remove popBackStack from here to let UI show snackbar properly or handle it gracefully
+                Snackbar.make(requireView(), "Insumo salvo com sucesso!", Snackbar.LENGTH_SHORT).show();
                 navController.popBackStack();
             }
         });
 
         viewModel.getSaveErrorEvent().observe(getViewLifecycleOwner(), errorMessage -> {
-            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            Snackbar.make(requireView(), errorMessage, Snackbar.LENGTH_LONG).show();
         });
     }
 
     private void saveIngredient() {
+        boolean hasError = false;
+
         String name = editName.getText().toString().trim();
+        if (TextUtils.isEmpty(name)) {
+            layoutName.setError(getString(R.string.error_required_field));
+            hasError = true;
+        }
+
         String priceText = editPrice.getText().toString().trim();
+        if (TextUtils.isEmpty(priceText) || priceText.equals("0,00")) {
+            layoutPrice.setError(getString(R.string.error_required_field));
+            hasError = true;
+        }
+
         String quantityText = editQuantity.getText().toString().trim();
+        if (TextUtils.isEmpty(quantityText) || quantityText.equals("0,000")) {
+            layoutQuantity.setError(getString(R.string.error_required_field));
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
+        
         String currentStockText = editCurrentStock.getText().toString().trim();
 
         viewModel.saveIngredient(currentIngredient, name, priceText, quantityText, currentStockText);
@@ -133,7 +199,11 @@ public class AddEditIngredientFragment extends Fragment {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (layoutName != null) layoutName.setError(null);
+                if (layoutPrice != null) layoutPrice.setError(null);
+                if (layoutQuantity != null) layoutQuantity.setError(null);
+            }
             @Override
             public void afterTextChanged(Editable s) {
                 validateSaveButton();
@@ -168,6 +238,10 @@ public class AddEditIngredientFragment extends Fragment {
 
         if (buttonSave != null) {
             buttonSave.setEnabled(isValid);
+        }
+        
+        if (textSaveHint != null) {
+            textSaveHint.setVisibility(isValid ? View.GONE : View.VISIBLE);
         }
     }
 }

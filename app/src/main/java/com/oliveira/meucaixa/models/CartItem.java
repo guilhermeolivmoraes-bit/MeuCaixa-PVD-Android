@@ -2,6 +2,8 @@ package com.oliveira.meucaixa.models;
 
 import com.oliveira.meucaixa.models.Product;
 
+import java.math.BigDecimal;
+
 /**
  * Represents an item inside the shopping cart UI.
  * This is a simple model class, not a database entity.
@@ -27,10 +29,10 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public double getTotalPrice() {
+    public BigDecimal getTotalPrice() {
         if (product != null) {
-            return product.getPrice() * quantity;
+            return product.getPrice().multiply(BigDecimal.valueOf(quantity));
         }
-        return 0.0;
+        return BigDecimal.ZERO;
     }
 }

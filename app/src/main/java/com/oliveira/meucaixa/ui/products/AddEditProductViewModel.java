@@ -14,6 +14,8 @@ import com.oliveira.meucaixa.services.IngredientService;
 import com.oliveira.meucaixa.services.ProductService;
 import com.oliveira.meucaixa.utils.SessionManager;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +28,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
 
     // In-memory Set collection to guarantee uniqueness of ingredients in the recipe
     private final Set<ProductIngredient> recipeIngredients = new HashSet<>();
-    private final MutableLiveData<Double> totalRecipeCost = new MutableLiveData<>(0.0);
+    private final MutableLiveData<BigDecimal> totalRecipeCost = new MutableLiveData<>(BigDecimal.ZERO);
     private List<Ingredient> allDatabaseIngredients;
     private boolean isRecipeLoaded = false;
 
@@ -58,7 +60,7 @@ public class AddEditProductViewModel extends AndroidViewModel {
         return allIngredientsLiveData;
     }
 
-    public LiveData<Double> getTotalRecipeCost() {
+    public LiveData<BigDecimal> getTotalRecipeCost() {
         return totalRecipeCost;
     }
 
@@ -108,15 +110,15 @@ public class AddEditProductViewModel extends AndroidViewModel {
 
     public void recalculateTotalCost() {
         if (allDatabaseIngredients == null || allDatabaseIngredients.isEmpty()) {
-            totalRecipeCost.postValue(0.0);
+            totalRecipeCost.postValue(BigDecimal.ZERO);
             return;
         }
 
-        double totalCost = 0.0;
+        BigDecimal totalCost = BigDecimal.ZERO;
         for (ProductIngredient productIngredient : recipeIngredients) {
             for (Ingredient dbIngredient : allDatabaseIngredients) {
                 if (productIngredient.getIngredientId() == dbIngredient.getId()) {
-                    totalCost += calculateIngredientCost(dbIngredient, productIngredient.getQuantityUsed());
+                    totalCost = totalCost.add(calculateIngredientCost(dbIngredient, productIngredient.getQuantityUsed()));
                     break;
                 }
             }
@@ -124,10 +126,10 @@ public class AddEditProductViewModel extends AndroidViewModel {
         totalRecipeCost.postValue(totalCost);
     }
 
-    public double calculateIngredientCost(Ingredient ingredient, double quantityUsed) {
-        if (ingredient == null || ingredient.getPackageQuantity() <= 0) return 0.0;
-        double unitPrice = ingredient.getPackagePrice() / ingredient.getPackageQuantity();
-        return unitPrice * quantityUsed;
+    public BigDecimal calculateIngredientCost(Ingredient ingredient, double quantityUsed) {
+        if (ingredient == null || ingredient.getPackageQuantity() <= 0) return BigDecimal.ZERO;
+        BigDecimal unitPrice = ingredient.getPackagePrice().divide(BigDecimal.valueOf(ingredient.getPackageQuantity()), 6, RoundingMode.HALF_UP);
+        return unitPrice.multiply(BigDecimal.valueOf(quantityUsed));
     }
 
     public void saveProduct(Product product) {

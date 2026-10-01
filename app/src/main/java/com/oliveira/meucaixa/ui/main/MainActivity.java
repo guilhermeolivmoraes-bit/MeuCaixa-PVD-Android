@@ -28,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.welcomeFragment || 
                 destination.getId() == R.id.loginFragment || 
-                destination.getId() == R.id.signUpFragment) {
+                destination.getId() == R.id.signUpFragment ||
+                destination.getId() == R.id.addEditProductFragment ||
+                destination.getId() == R.id.addEditIngredientFragment) {
                 bottomNav.setVisibility(View.GONE);
             } else {
                 bottomNav.setVisibility(View.VISIBLE);

@@ -1,5 +1,6 @@
 package com.oliveira.meucaixa.ui.products;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.oliveira.meucaixa.R;
 import com.oliveira.meucaixa.models.Product;
 import com.oliveira.meucaixa.utils.MoneyTextWatcher;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -30,6 +33,8 @@ import androidx.navigation.Navigation;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Locale;
 
 public class AddEditProductFragment extends Fragment {
@@ -37,8 +42,8 @@ public class AddEditProductFragment extends Fragment {
     private AddEditProductViewModel addEditProductViewModel;
     private NavController navController;
     private EditText editTextName, editTextPrice, editTextStock, editTextCostPrice;
-    private TextInputLayout layoutCostPrice;
-    private TextView textTitle;
+    private TextInputLayout layoutName, layoutPrice, layoutStock, layoutCostPrice;
+    private TextView textTitle, textSaveHint;
     private Button buttonDelete, buttonSave, buttonManageIngredients;
     private RadioGroup radioGroupUnitType;
     private SwitchMaterial switchOwnProduction;
@@ -68,8 +73,12 @@ public class AddEditProductFragment extends Fragment {
         editTextPrice = view.findViewById(R.id.edit_text_product_price);
         editTextStock = view.findViewById(R.id.edit_text_product_stock);
         editTextCostPrice = view.findViewById(R.id.edit_text_cost_price);
+        layoutName = view.findViewById(R.id.layout_product_name);
+        layoutPrice = view.findViewById(R.id.layout_product_price);
+        layoutStock = view.findViewById(R.id.layout_product_stock);
         layoutCostPrice = view.findViewById(R.id.layout_cost_price);
         textTitle = view.findViewById(R.id.text_title);
+        textSaveHint = view.findViewById(R.id.text_save_hint);
         buttonDelete = view.findViewById(R.id.button_delete);
         buttonSave = view.findViewById(R.id.button_save);
         buttonManageIngredients = view.findViewById(R.id.button_manage_ingredients);
@@ -77,23 +86,33 @@ public class AddEditProductFragment extends Fragment {
         switchOwnProduction = view.findViewById(R.id.switch_own_production);
         
         ImageButton buttonBack = view.findViewById(R.id.button_back);
-        buttonBack.setOnClickListener(v -> navController.popBackStack());
+        buttonBack.setOnClickListener(v -> confirmExit());
     }
 
     private void setupListeners() {
         editTextPrice.addTextChangedListener(new MoneyTextWatcher(editTextPrice));
         editTextCostPrice.addTextChangedListener(new MoneyTextWatcher(editTextCostPrice));
 
-        editTextStock.addTextChangedListener(new TextWatcher() {
+        TextWatcher validationWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Limpa o erro ao digitar
+                if (layoutName != null) layoutName.setError(null);
+                if (layoutPrice != null) layoutPrice.setError(null);
+                if (layoutStock != null) layoutStock.setError(null);
+            }
             @Override
             public void afterTextChanged(Editable s) {
                 validateSaveButton();
             }
-        });
+        };
+
+        editTextName.addTextChangedListener(validationWatcher);
+        editTextPrice.addTextChangedListener(validationWatcher);
+        editTextStock.addTextChangedListener(validationWatcher);
+        editTextCostPrice.addTextChangedListener(validationWatcher);
 
         buttonSave.setOnClickListener(v -> saveProduct());
         buttonDelete.setOnClickListener(v -> deleteProduct());
@@ -104,6 +123,27 @@ public class AddEditProductFragment extends Fragment {
         });
 
         setupDynamicToggles();
+        setupBackNavigation();
+    }
+
+    private void setupBackNavigation() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                confirmExit();
+            }
+        });
+    }
+
+    private void confirmExit() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Descartar rascunho?")
+                .setMessage("Você tem alterações não salvas. Se você sair agora, os dados preenchidos serão perdidos.")
+                .setPositiveButton("Sair", (dialog, which) -> {
+                    navController.popBackStack();
+                })
+                .setNegativeButton("Continuar Editando", null)
+                .show();
     }
 
     private void setupDynamicToggles() {
@@ -172,32 +212,63 @@ public class AddEditProductFragment extends Fragment {
     }
 
     private void validateSaveButton() {
-        String stockStr = editTextStock.getText().toString().trim();
-        boolean isStockValid = false;
-        try {
-            double stock = Double.parseDouble(stockStr.replace(",", "."));
-            if (stock >= 0) { // Changed to >= 0 since users might leave stock empty or zero
-                isStockValid = true;
-            }
-        } catch (NumberFormatException e) {
-            isStockValid = false;
+        boolean isValid = true;
+        
+        String name = editTextName.getText().toString().trim();
+        if (TextUtils.isEmpty(name)) {
+            isValid = false;
         }
 
-        buttonSave.setEnabled(isStockValid);
+        String priceStr = editTextPrice.getText().toString().trim();
+        if (TextUtils.isEmpty(priceStr) || priceStr.equals("0,00")) {
+            isValid = false;
+        }
+
+        String stockStr = editTextStock.getText().toString().trim();
+        try {
+            double stock = Double.parseDouble(stockStr.replace(",", "."));
+            if (stock < 0) {
+                isValid = false;
+            }
+        } catch (NumberFormatException e) {
+            isValid = false;
+        }
+
+        buttonSave.setEnabled(isValid);
+        
+        if (textSaveHint != null) {
+            textSaveHint.setVisibility(isValid ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void saveProduct() {
         String name = editTextName.getText().toString().trim();
         String priceStr = editTextPrice.getText().toString().trim();
         String stockStr = editTextStock.getText().toString().trim();
+        
+        boolean hasError = false;
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(priceStr) || TextUtils.isEmpty(stockStr)) {
-            Toast.makeText(getContext(), "Por favor, preencha nome, preço e estoque", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name)) {
+            layoutName.setError(getString(R.string.error_required_field));
+            hasError = true;
+        }
+
+        if (TextUtils.isEmpty(priceStr) || priceStr.equals("0,00")) {
+            layoutPrice.setError(getString(R.string.error_required_field));
+            hasError = true;
+        }
+
+        if (TextUtils.isEmpty(stockStr)) {
+            layoutStock.setError(getString(R.string.error_required_field));
+            hasError = true;
+        }
+
+        if (hasError) {
             return;
         }
 
         String priceAsNumber = priceStr.replaceAll("[^\\d]", "");
-        double price = priceAsNumber.isEmpty() ? 0 : Double.parseDouble(priceAsNumber) / 100.0;
+        BigDecimal price = priceAsNumber.isEmpty() ? BigDecimal.ZERO : new BigDecimal(priceAsNumber).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
         
         double stock = 0;
         try {
@@ -219,7 +290,7 @@ public class AddEditProductFragment extends Fragment {
         if (!switchOwnProduction.isChecked()) {
             String costStr = editTextCostPrice.getText().toString().trim();
             String costAsNumber = costStr.replaceAll("[^\\d]", "");
-            double cost = costAsNumber.isEmpty() ? 0 : Double.parseDouble(costAsNumber) / 100.0;
+            BigDecimal cost = costAsNumber.isEmpty() ? BigDecimal.ZERO : new BigDecimal(costAsNumber).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
             currentProduct.setCostPrice(cost);
         } else {
             // Se for produção própria o custo virá da soma dos ingredientes
@@ -227,15 +298,22 @@ public class AddEditProductFragment extends Fragment {
         }
 
         addEditProductViewModel.saveProduct(currentProduct);
-        Toast.makeText(getContext(), "Produto salvo com sucesso!", Toast.LENGTH_SHORT).show();
+        Snackbar.make(requireView(), "Produto salvo com sucesso!", Snackbar.LENGTH_SHORT).show();
         navController.popBackStack();
     }
 
     private void deleteProduct() {
         if (currentProduct != null) {
-            addEditProductViewModel.deleteProduct(currentProduct);
-            Toast.makeText(getContext(), "Produto excluído com sucesso!", Toast.LENGTH_SHORT).show();
-            navController.popBackStack();
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Excluir Produto")
+                    .setMessage("Tem certeza que deseja excluir o produto '" + currentProduct.getName() + "'?\n\nEsta ação excluirá o produto e não pode ser desfeita.")
+                    .setPositiveButton("Excluir", (dialog, which) -> {
+                        addEditProductViewModel.deleteProduct(currentProduct);
+                        Toast.makeText(getContext(), "Produto excluído com sucesso!", Toast.LENGTH_SHORT).show();
+                        navController.popBackStack();
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
         }
     }
 }

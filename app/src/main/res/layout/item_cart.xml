@@ -32,6 +32,7 @@
 
         <!-- Botão de Excluir -->
         <ImageButton
+        android:contentDescription="@string/app_name"
             android:id="@+id/button_delete_item"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -43,6 +44,7 @@
 
         <!-- Controles de Quantidade -->
         <ImageButton
+        android:contentDescription="@string/app_name"
             android:id="@+id/button_decrease_quantity"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -68,6 +70,7 @@
             tools:text="1" />
 
         <ImageButton
+        android:contentDescription="@string/app_name"
             android:id="@+id/button_increase_quantity"
             android:layout_width="36dp"
             android:layout_height="36dp"

@@ -8,6 +8,7 @@
     tools:context=".ui.products.AddEditIngredientFragment">
 
     <ImageButton
+        android:contentDescription="@string/app_name"
         android:id="@+id/button_back"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -44,20 +45,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_back" />
 
-    <EditText
-        android:id="@+id/edit_text_ingredient_name"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_ingredient_name"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
-        android:background="?attr/editTextBackground"
-        android:hint="Ex: Farinha de Trigo"
-        android:inputType="textCapSentences"
-        android:paddingHorizontal="20dp"
-        android:textColor="@color/edit_text_text_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_name" />
+        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_ingredient_name"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/editTextBackground"
+            android:hint="Ex: Farinha de Trigo"
+            android:inputType="textCapSentences"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/edit_text_text_selector" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/label_ingredient_price"
@@ -69,22 +76,28 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ingredient_name" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_ingredient_name" />
 
-    <EditText
-        android:id="@+id/edit_text_ingredient_price"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_ingredient_price"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
-        android:background="?attr/editTextBackground"
-        android:hint="0,00"
-        android:inputType="numberDecimal"
-        android:paddingHorizontal="20dp"
-        android:textColor="@color/edit_text_text_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_price" />
+        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_price">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_ingredient_price"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/editTextBackground"
+            android:hint="0,00"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/edit_text_text_selector" />
+    </com.google.android.material.textfield.TextInputLayout>
         
     <TextView
         android:id="@+id/label_ingredient_quantity"
@@ -96,22 +109,28 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ingredient_price" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_ingredient_price" />
 
-    <EditText
-        android:id="@+id/edit_text_ingredient_quantity"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_ingredient_quantity"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
-        android:background="?attr/editTextBackground"
-        android:hint="Ex: 1,000"
-        android:inputType="numberDecimal"
-        android:paddingHorizontal="20dp"
-        android:textColor="@color/edit_text_text_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_quantity" />
+        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_quantity">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_ingredient_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/editTextBackground"
+            android:hint="Ex: 1,000"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/edit_text_text_selector" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/label_ingredient_current_stock"
@@ -123,23 +142,42 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ingredient_quantity" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_ingredient_quantity" />
 
-    <EditText
-        android:id="@+id/edit_text_ingredient_current_stock"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_ingredient_current_stock"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="24dp"
-        android:background="?attr/editTextBackground"
-        android:hint="Ex: 5,000"
-        android:inputType="numberDecimal"
-        android:paddingHorizontal="20dp"
-        android:textColor="@color/edit_text_text_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_current_stock" />
+        app:layout_constraintTop_toBottomOf="@+id/label_ingredient_current_stock">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_ingredient_current_stock"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/editTextBackground"
+            android:hint="Ex: 5,000"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/edit_text_text_selector" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/text_save_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Preencha os campos obrigatórios para salvar."
+        android:textColor="?attr/colorError"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/button_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Botões -->
     <com.google.android.material.button.MaterialButton
@@ -155,7 +193,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_delete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ingredient_current_stock"
+        app:layout_constraintTop_toBottomOf="@+id/layout_ingredient_current_stock"
         app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.button.MaterialButton

@@ -14,6 +14,8 @@ import com.oliveira.meucaixa.models.ProductIngredient;
 import com.oliveira.meucaixa.models.Sale;
 import com.oliveira.meucaixa.models.SaleItem;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -47,7 +49,12 @@ public class SaleService {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    public void processCheckoutAsync(long userId, double totalValue, double totalCost, List<SaleItem> frozenCartItems, Runnable onSuccess) {
+    public interface CheckoutCallback {
+        void onSuccess();
+        void onError(Exception e);
+    }
+
+    public void processCheckoutAsync(long userId, BigDecimal totalValue, BigDecimal totalCost, List<SaleItem> frozenCartItems, CheckoutCallback callback) {
         executorService.execute(() -> {
             try {
                 db.runInTransaction(() -> {
@@ -70,17 +77,20 @@ public class SaleService {
                         Product product = productDao.getByIdSynchronous(cartItem.getProductId(), userId);
 
                         if (product == null) {
-                            Log.e("CheckoutFlow", "CRÍTICO: Produto do carrinho [" + cartItem.getProductId() + "] não achou o BD. Skip.");
-                            continue;
+                            Log.e("CheckoutFlow", "CRÍTICO: Produto do carrinho [" + cartItem.getProductId() + "] não achou o BD. Rollback.");
+                            throw new IllegalStateException("Produto \"" + cartItem.getProductName() + "\" não encontrado no banco de dados. A venda foi cancelada.");
                         }
 
                         double newStock = product.getStock() - cartItem.getQuantity();
+                        if (newStock < 0) {
+                            throw new IllegalStateException("Estoque insuficiente para o produto: " + product.getName());
+                        }
                         if (newStock < 0.001) newStock = 0.0;
-                        product.setStock(Math.max(0, newStock));
+                        product.setStock(newStock);
                         productDao.update(product);
                         Log.d("CheckoutFlow", "Dedução efetuada no Produto Físico (" + product.getName() + ") -> Saldo: " + newStock);
 
-                        double itemUnitCost = (!product.isOwnProduction()) ? product.getCostPrice() : 0.0;
+                        BigDecimal itemUnitCost = (!product.isOwnProduction()) ? product.getCostPrice() : BigDecimal.ZERO;
 
                         List<ProductIngredient> recipe = productIngredientDao.getIngredientsForProductSynchronous(product.getId());
                         if (recipe != null && !recipe.isEmpty()) {
@@ -89,14 +99,17 @@ public class SaleService {
                                 Ingredient ingredient = ingredientDao.getIngredientById(pi.getIngredientId());
                                 if (ingredient != null) {
                                     if (ingredient.getPackageQuantity() > 0) {
-                                        double unitIngredientCost = ingredient.getPackagePrice() / ingredient.getPackageQuantity();
-                                        itemUnitCost += unitIngredientCost * pi.getQuantityUsed();
+                                        BigDecimal unitIngredientCost = ingredient.getPackagePrice().divide(BigDecimal.valueOf(ingredient.getPackageQuantity()), 6, RoundingMode.HALF_UP);
+                                        itemUnitCost = itemUnitCost.add(unitIngredientCost.multiply(BigDecimal.valueOf(pi.getQuantityUsed())));
                                     }
 
                                     double deduction = pi.getQuantityUsed() * cartItem.getQuantity();
                                     double newIngredientStock = ingredient.getCurrentStock() - deduction;
+                                    if (newIngredientStock < 0) {
+                                        throw new IllegalStateException("Estoque insuficiente do insumo \"" + ingredient.getName() + "\" para produzir \"" + product.getName() + "\".");
+                                    }
                                     if (newIngredientStock < 0.001) newIngredientStock = 0.0;
-                                    ingredient.setCurrentStock(Math.max(0, newIngredientStock));
+                                    ingredient.setCurrentStock(newIngredientStock);
                                     ingredientDao.update(ingredient);
                                     
                                     Log.d("CheckoutFlow", "Abate no Insumo: " + ingredient.getName() + " | Qtd Abatida: " + deduction + " | Novo Saldo: " + newIngredientStock);
@@ -112,12 +125,15 @@ public class SaleService {
                     Log.d("CheckoutFlow", "=== TRANSAÇÃO FINALIZADA COM SUCESSO: Todos os itens persistidos! ===");
                 });
 
-                if (onSuccess != null) {
-                    onSuccess.run();
+                if (callback != null) {
+                    callback.onSuccess();
                 }
                 
             } catch (Exception e) {
                 Log.e("CheckoutFlow", "ERRO NO FLUXO DE VENDA. Ocorreu um Rollback!", e);
+                if (callback != null) {
+                    callback.onError(e);
+                }
             }
         });
     }

@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import java.math.BigDecimal;
 
 @Entity(tableName = "sales",
         foreignKeys = @ForeignKey(entity = User.class,
@@ -21,8 +22,8 @@ public class Sale {
     private long userId;
 
     private long date;
-    private double totalPrice;
-    private double totalCost;
+    private BigDecimal totalPrice;
+    private BigDecimal totalCost;
 
     // Getters and Setters
 
@@ -50,19 +51,19 @@ public class Sale {
         this.date = date;
     }
 
-    public double getTotalPrice() {
+    public BigDecimal getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public double getTotalCost() {
+    public BigDecimal getTotalCost() {
         return totalCost;
     }
 
-    public void setTotalCost(double totalCost) {
+    public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
     }
 }

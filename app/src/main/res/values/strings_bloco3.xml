@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_required_field">Preencha este campo obrigatório</string>
+    <string name="error_invalid_value">Valor inválido</string>
+    <string name="hint_fill_required_fields">Preencha os campos obrigatórios para salvar.</string>
+</resources>

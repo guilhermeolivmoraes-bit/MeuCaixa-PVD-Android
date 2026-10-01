@@ -3,6 +3,7 @@ package com.oliveira.meucaixa.models;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
+import java.math.BigDecimal;
 
 @Entity(
         tableName = "sale_items",
@@ -27,11 +28,11 @@ public class SaleItem {
     private long saleId;
     private long productId;
     private String productName;
-    private double productPrice;
-    private double costPrice;
+    private BigDecimal productPrice;
+    private BigDecimal costPrice;
     private double quantity;
 
-    public SaleItem(long saleId, long productId, String productName, double productPrice, double costPrice, double quantity) {
+    public SaleItem(long saleId, long productId, String productName, BigDecimal productPrice, BigDecimal costPrice, double quantity) {
         this.saleId = saleId;
         this.productId = productId;
         this.productName = productName;
@@ -47,10 +48,10 @@ public class SaleItem {
     public void setProductId(long productId) { this.productId = productId; }
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
-    public double getProductPrice() { return productPrice; }
-    public void setProductPrice(double productPrice) { this.productPrice = productPrice; }
-    public double getCostPrice() { return costPrice; }
-    public void setCostPrice(double costPrice) { this.costPrice = costPrice; }
+    public BigDecimal getProductPrice() { return productPrice; }
+    public void setProductPrice(BigDecimal productPrice) { this.productPrice = productPrice; }
+    public BigDecimal getCostPrice() { return costPrice; }
+    public void setCostPrice(BigDecimal costPrice) { this.costPrice = costPrice; }
     public double getQuantity() { return quantity; }
     public void setQuantity(double quantity) { this.quantity = quantity; }
 }

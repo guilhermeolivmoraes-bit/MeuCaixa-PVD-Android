@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,24 @@ public class NewSaleViewModel extends AndroidViewModel {
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>();
     public final LiveData<List<Product>> searchResults;
 
-    // O(1) performance Map for Cart Items (Key: productId)
+    public enum CheckoutState {
+        IDLE, LOADING, SUCCESS, ERROR
+    }
+
+    private final MutableLiveData<CheckoutState> checkoutState = new MutableLiveData<>(CheckoutState.IDLE);
+    private final MutableLiveData<String> checkoutErrorMessage = new MutableLiveData<>();
+
+    public LiveData<CheckoutState> getCheckoutState() {
+        return checkoutState;
+    }
+
+    public LiveData<String> getCheckoutErrorMessage() {
+        return checkoutErrorMessage;
+    }
+
+    public void resetCheckoutState() {
+        checkoutState.setValue(CheckoutState.IDLE);
+    }
     private final Map<Long, SaleItem> cartMap = new HashMap<>();
 
     public NewSaleViewModel(@NonNull Application application) {
@@ -60,7 +78,7 @@ public class NewSaleViewModel extends AndroidViewModel {
                 existingItem.setQuantity(existingItem.getQuantity() + quantity);
             }
         } else {
-            SaleItem newItem = new SaleItem(0L, productId, product.getName(), product.getPrice(), 0.0, quantity);
+            SaleItem newItem = new SaleItem(0L, productId, product.getName(), product.getPrice(), BigDecimal.ZERO, quantity);
             cartMap.put(productId, newItem);
         }
     }
@@ -90,13 +108,25 @@ public class NewSaleViewModel extends AndroidViewModel {
         return productDao.getById(productId, userId);
     }
 
-    public void saveCompleteSale(double totalValue, double totalCost) {
+    public void saveCompleteSale(BigDecimal totalValue, BigDecimal totalCost) {
         // Obter de forma síncrona/segura os itens ANTES de pular para a thread de background
         List<SaleItem> frozenCartItems = getCartItemsAsList();
         
-        saleService.processCheckoutAsync(userId, totalValue, totalCost, frozenCartItems, () -> {
-            cartMap.clear();
-            Log.d("CheckoutFlow", "Carrinho limpo após Checkout de Sucesso.");
+        checkoutState.setValue(CheckoutState.LOADING);
+        
+        saleService.processCheckoutAsync(userId, totalValue, totalCost, frozenCartItems, new SaleService.CheckoutCallback() {
+            @Override
+            public void onSuccess() {
+                cartMap.clear();
+                Log.d("CheckoutFlow", "Carrinho limpo após Checkout de Sucesso.");
+                checkoutState.postValue(CheckoutState.SUCCESS);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                checkoutErrorMessage.postValue(e.getMessage());
+                checkoutState.postValue(CheckoutState.ERROR);
+            }
         });
     }
 }

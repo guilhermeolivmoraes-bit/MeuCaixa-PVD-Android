@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -57,9 +59,11 @@ public class ReportsFragment extends Fragment {
         long endOfDay = calendar.getTimeInMillis();
 
         reportsViewModel.getSalesForDay(startOfDay, endOfDay).observe(getViewLifecycleOwner(), sales -> {
-            double total = 0;
+            BigDecimal total = BigDecimal.ZERO;
             for (Sale sale : sales) {
-                total += sale.getTotalPrice();
+                if (sale.getTotalPrice() != null) {
+                    total = total.add(sale.getTotalPrice());
+                }
             }
 
             textTodaySalesValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
@@ -79,9 +83,11 @@ public class ReportsFragment extends Fragment {
         long endOfMonth = calendar.getTimeInMillis();
 
         reportsViewModel.getSalesForMonth(startOfMonth, endOfMonth).observe(getViewLifecycleOwner(), sales -> {
-            double total = 0;
+            BigDecimal total = BigDecimal.ZERO;
             for (Sale sale : sales) {
-                total += sale.getTotalPrice();
+                if (sale.getTotalPrice() != null) {
+                    total = total.add(sale.getTotalPrice());
+                }
             }
 
             textMonthSalesValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));

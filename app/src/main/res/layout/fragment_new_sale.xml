@@ -14,6 +14,7 @@
 
         <!-- Cabeçalho -->
         <ImageButton
+        android:contentDescription="@string/app_name"
             android:id="@+id/button_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -73,6 +74,7 @@
             android:paddingTop="16dp">
 
             <ImageView
+        android:contentDescription="Imagem"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/ic_shopping_cart"
@@ -156,6 +158,22 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Overlay de Carregamento -->
+    <FrameLayout
+        android:id="@+id/overlay_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:indicatorColor="?attr/colorPrimary" />
+    </FrameLayout>
 
 </FrameLayout>

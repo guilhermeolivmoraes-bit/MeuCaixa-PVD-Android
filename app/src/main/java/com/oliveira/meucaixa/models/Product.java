@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import java.math.BigDecimal;
 
 @Entity(tableName = "products",
         foreignKeys = @ForeignKey(entity = User.class,
@@ -24,7 +25,7 @@ public class Product {
     private String name;
 
     @ColumnInfo(name = "product_price")
-    private double price;
+    private BigDecimal price;
 
     @ColumnInfo(name = "product_stock")
     private double stock;
@@ -36,7 +37,7 @@ public class Product {
     private boolean isOwnProduction;
 
     @ColumnInfo(name = "cost_price")
-    private double costPrice;
+    private BigDecimal costPrice;
 
     // Getters and Setters
 
@@ -64,11 +65,11 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -96,11 +97,11 @@ public class Product {
         isOwnProduction = ownProduction;
     }
 
-    public double getCostPrice() {
+    public BigDecimal getCostPrice() {
         return costPrice;
     }
 
-    public void setCostPrice(double costPrice) {
+    public void setCostPrice(BigDecimal costPrice) {
         this.costPrice = costPrice;
     }
 }

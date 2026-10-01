@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,9 +71,11 @@ public class DashboardFragment extends Fragment {
         long endOfDay = calendar.getTimeInMillis();
 
         dashboardViewModel.getSalesForDay(startOfDay, endOfDay).observe(getViewLifecycleOwner(), sales -> {
-            double total = 0;
+            BigDecimal total = BigDecimal.ZERO;
             for (Sale sale : sales) {
-                total += sale.getTotalPrice();
+                if (sale.getTotalPrice() != null) {
+                    total = total.add(sale.getTotalPrice());
+                }
             }
             textTodaySalesValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
             textTodaySalesCount.setText(String.format(Locale.getDefault(), "%d venda(s)", sales.size()));

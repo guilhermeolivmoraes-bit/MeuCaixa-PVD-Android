@@ -55,6 +55,7 @@
                 android:layout_marginTop="4dp">
                 
                 <ImageView
+        android:contentDescription="Imagem"
                     android:id="@+id/icon_warning"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
@@ -86,6 +87,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageButton
+        android:contentDescription="@string/app_name"
                 android:id="@+id/btn_edit"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -98,6 +100,7 @@
                 app:tint="?attr/colorOnPrimary" />
 
             <ImageButton
+        android:contentDescription="@string/app_name"
                 android:id="@+id/btn_delete"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

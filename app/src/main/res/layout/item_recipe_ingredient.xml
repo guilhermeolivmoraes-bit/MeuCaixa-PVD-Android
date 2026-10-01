@@ -43,6 +43,7 @@
         tools:text="0,500 Kg" />
 
     <ImageButton
+        android:contentDescription="@string/app_name"
         android:id="@+id/button_remove_ingredient"
         android:layout_width="40dp"
         android:layout_height="40dp"

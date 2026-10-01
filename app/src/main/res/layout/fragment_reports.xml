@@ -49,6 +49,7 @@
                     android:gravity="center_vertical">
 
                     <ImageView
+        android:contentDescription="Imagem"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/rounded_icon_background"
@@ -112,6 +113,7 @@
                     android:gravity="center_vertical">
 
                     <ImageView
+        android:contentDescription="Imagem"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/rounded_icon_background"

@@ -1,5 +1,6 @@
 package com.oliveira.meucaixa.ui.products;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,12 +27,15 @@ import com.oliveira.meucaixa.R;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 import com.oliveira.meucaixa.models.Ingredient;
 import com.oliveira.meucaixa.models.ProductIngredient;
@@ -44,6 +48,7 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
     private MaterialButton buttonAdd;
     private RecyclerView recyclerView;
     private TextView textTotalCost;
+    private TextView textCostAlert;
     private MaterialButton buttonConfirm;
 
     private RecipeIngredientAdapter adapter;
@@ -59,7 +64,7 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
 
     @NonNull
     @Override
-    public android.app.Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         dialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
@@ -87,6 +92,7 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
         buttonAdd = view.findViewById(R.id.button_add_ingredient);
         recyclerView = view.findViewById(R.id.recycler_view_recipe_ingredients);
         textTotalCost = view.findViewById(R.id.text_total_cost);
+        textCostAlert = view.findViewById(R.id.text_cost_alert);
         buttonConfirm = view.findViewById(R.id.button_confirm_recipe);
 
         editTextQuantity.addTextChangedListener(new WeightTextWatcher(editTextQuantity));
@@ -196,11 +202,16 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
         ingredientList.clear();
         Set<ProductIngredient> recipeSet = viewModel.getRecipeIngredients();
         
+        boolean hasZeroCostIngredient = false;
+        
         if (availableIngredients != null && recipeSet != null) {
             for (ProductIngredient pi : recipeSet) {
                 for (Ingredient dbIngredient : availableIngredients) {
                     if (pi.getIngredientId() == dbIngredient.getId()) {
-                        double cost = viewModel.calculateIngredientCost(dbIngredient, pi.getQuantityUsed());
+                        if (dbIngredient.getPackageQuantity() <= 0) {
+                            hasZeroCostIngredient = true;
+                        }
+                        BigDecimal cost = viewModel.calculateIngredientCost(dbIngredient, pi.getQuantityUsed());
                         ingredientList.add(new RecipeIngredient(
                             dbIngredient.getName(), 
                             String.format(Locale.getDefault(), "%.3f", pi.getQuantityUsed()), 
@@ -212,6 +223,11 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
                 }
             }
         }
+        
+        if (textCostAlert != null) {
+            textCostAlert.setVisibility(hasZeroCostIngredient ? View.VISIBLE : View.GONE);
+        }
+        
         adapter.notifyDataSetChanged();
     }
 
@@ -220,10 +236,10 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
     public static class RecipeIngredient {
         String name;
         String quantity;
-        double cost;
+        BigDecimal cost;
         ProductIngredient productIngredientRef;
 
-        public RecipeIngredient(String name, String quantity, double cost, ProductIngredient ref) {
+        public RecipeIngredient(String name, String quantity, BigDecimal cost, ProductIngredient ref) {
             this.name = name;
             this.quantity = quantity;
             this.cost = cost;
@@ -262,7 +278,14 @@ public class RecipeIngredientsBottomSheet extends BottomSheetDialogFragment {
             holder.remove.setOnClickListener(v -> {
                 int currentPos = holder.getAdapterPosition();
                 if (currentPos != RecyclerView.NO_POSITION) {
-                    removeListener.onRemove(currentPos);
+                    new AlertDialog.Builder(v.getContext())
+                        .setTitle("Remover Insumo")
+                        .setMessage("Tem certeza que deseja remover '" + item.name + "' desta receita?")
+                        .setPositiveButton("Remover", (dialog, which) -> {
+                            removeListener.onRemove(currentPos);
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
                 }
             });
         }

@@ -2,6 +2,7 @@ package com.oliveira.meucaixa.ui.sales;
 
 import com.oliveira.meucaixa.R;
 import com.oliveira.meucaixa.models.Product;
+import com.oliveira.meucaixa.models.SaleItem;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import androidx.appcompat.app.AlertDialog;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,6 +44,7 @@ public class NewSaleFragment extends Fragment {
 
     private TextView textTotalValue;
     private Button buttonFinalizeSale;
+    private FrameLayout overlayLoading;
 
     @Nullable
     @Override
@@ -58,8 +63,40 @@ public class NewSaleFragment extends Fragment {
         setupRecyclerViewCart();
         setupFakeSearch();
         setupFragmentResultListener();
+        setupObservers();
         
         updateCartUI();
+    }
+
+    private void setupObservers() {
+        newSaleViewModel.getCheckoutState().observe(getViewLifecycleOwner(), state -> {
+            switch (state) {
+                case LOADING:
+                    overlayLoading.setVisibility(View.VISIBLE);
+                    break;
+                case SUCCESS:
+                    overlayLoading.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Venda salva com sucesso!", Toast.LENGTH_SHORT).show();
+                    newSaleViewModel.resetCheckoutState();
+                    navController.popBackStack();
+                    break;
+                case ERROR:
+                    overlayLoading.setVisibility(View.GONE);
+                    String errorMsg = newSaleViewModel.getCheckoutErrorMessage().getValue();
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Erro na Venda")
+                            .setMessage(errorMsg != null ? errorMsg : "Ocorreu um erro desconhecido.")
+                            .setPositiveButton("OK", null)
+                            .setCancelable(false)
+                            .show();
+                    newSaleViewModel.resetCheckoutState();
+                    break;
+                case IDLE:
+                default:
+                    overlayLoading.setVisibility(View.GONE);
+                    break;
+            }
+        });
     }
 
     private void bindViews(View view) {
@@ -68,6 +105,7 @@ public class NewSaleFragment extends Fragment {
         emptyCartView = view.findViewById(R.id.empty_cart_view);
         textTotalValue = view.findViewById(R.id.text_total_value);
         buttonFinalizeSale = view.findViewById(R.id.button_finalize_sale);
+        overlayLoading = view.findViewById(R.id.overlay_loading);
 
         ImageButton buttonBack = view.findViewById(R.id.button_back);
         buttonBack.setOnClickListener(v -> navController.popBackStack());
@@ -87,7 +125,7 @@ public class NewSaleFragment extends Fragment {
 
             @Override
             public void onItemDeleted(int position) {
-                List<com.oliveira.meucaixa.models.SaleItem> items = newSaleViewModel.getCartItemsAsList();
+                List<SaleItem> items = newSaleViewModel.getCartItemsAsList();
                 if (position >= 0 && position < items.size()) {
                     long productId = items.get(position).getProductId();
                     newSaleViewModel.removeItemFromCart(productId);
@@ -131,28 +169,26 @@ public class NewSaleFragment extends Fragment {
     }
 
     private void finalizeSale() {
-        List<com.oliveira.meucaixa.models.SaleItem> items = newSaleViewModel.getCartItemsAsList();
+        List<SaleItem> items = newSaleViewModel.getCartItemsAsList();
         if (items.isEmpty()) {
             Toast.makeText(getContext(), "O carrinho está vazio", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double totalValue = 0;
-        double totalCost = 0; // Assuming we would calculate this based on Product's costPrice.
+        BigDecimal totalValue = BigDecimal.ZERO;
+        BigDecimal totalCost = BigDecimal.ZERO; // Assuming we would calculate this based on Product's costPrice.
         
         // As a simplification due to the transition, we calculate total price here.
-        for (com.oliveira.meucaixa.models.SaleItem item : items) {
-            totalValue += (item.getProductPrice() * item.getQuantity());
+        for (SaleItem item : items) {
+            totalValue = totalValue.add(item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             // Optionally, accumulate total cost if available.
         }
 
         newSaleViewModel.saveCompleteSale(totalValue, totalCost);
-        Toast.makeText(getContext(), "Venda salva com sucesso!", Toast.LENGTH_SHORT).show();
-        navController.popBackStack();
     }
 
     private void updateCartUI() {
-        List<com.oliveira.meucaixa.models.SaleItem> currentItems = newSaleViewModel.getCartItemsAsList();
+        List<SaleItem> currentItems = newSaleViewModel.getCartItemsAsList();
         
         cartAdapter = new CartAdapter(currentItems, new CartAdapter.OnSaleItemChangeListener() {
             @Override
@@ -177,9 +213,9 @@ public class NewSaleFragment extends Fragment {
 
         buttonFinalizeSale.setEnabled(!isCartEmpty);
 
-        double total = 0;
-        for (com.oliveira.meucaixa.models.SaleItem item : currentItems) {
-            total += (item.getProductPrice() * item.getQuantity());
+        BigDecimal total = BigDecimal.ZERO;
+        for (SaleItem item : currentItems) {
+            total = total.add(item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
         }
         textTotalValue.setText(String.format(Locale.getDefault(), "R$ %.2f", total));
     }
