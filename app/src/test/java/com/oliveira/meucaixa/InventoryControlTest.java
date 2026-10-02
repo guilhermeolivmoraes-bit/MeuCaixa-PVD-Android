@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -80,11 +81,16 @@ public class InventoryControlTest {
         when(mockProductIngredientDao.getIngredientsForProductSynchronous(productId)).thenReturn(Collections.emptyList());
 
         // Item do carrinho
-        SaleItem cartItem = new SaleItem(0L, productId, "Refrigerante", 10.0, 5.0, 2.0);
+        SaleItem cartItem = new SaleItem(0L, productId, "Refrigerante", BigDecimal.valueOf(10.0), BigDecimal.valueOf(5.0), 2.0);
         List<SaleItem> cartItems = Collections.singletonList(cartItem);
 
         // Executa o checkout
-        saleService.processCheckoutAsync(userId, 20.0, 10.0, cartItems, () -> {});
+        saleService.processCheckoutAsync(userId, BigDecimal.valueOf(20.0), BigDecimal.valueOf(10.0), cartItems, new SaleService.CheckoutCallback() {
+            @Override
+            public void onSuccess() {}
+            @Override
+            public void onError(Exception e) {}
+        });
 
         // Verifica se o estoque do produto diminuiu
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
@@ -112,7 +118,7 @@ public class InventoryControlTest {
         farinha.setId(ingredientId);
         farinha.setName("Farinha de Trigo");
         farinha.setPackageQuantity(1.0); // 1kg = 1.0
-        farinha.setPackagePrice(5.0); // R$ 5.00
+        farinha.setPackagePrice(BigDecimal.valueOf(5.0)); // R$ 5.00
         farinha.setCurrentStock(2.0); // 2kg no estoque atual
 
         // Setup da receita (Usa 0.5kg de farinha por bolo)
@@ -123,11 +129,16 @@ public class InventoryControlTest {
         when(mockIngredientDao.getIngredientById(ingredientId)).thenReturn(farinha);
 
         // Vendendo 2 bolos
-        SaleItem cartItem = new SaleItem(0L, productId, "Bolo", 20.0, 0.0, 2.0);
+        SaleItem cartItem = new SaleItem(0L, productId, "Bolo", BigDecimal.valueOf(20.0), BigDecimal.ZERO, 2.0);
         List<SaleItem> cartItems = Collections.singletonList(cartItem);
 
         // Executa o checkout
-        saleService.processCheckoutAsync(userId, 40.0, 0.0, cartItems, () -> {});
+        saleService.processCheckoutAsync(userId, BigDecimal.valueOf(40.0), BigDecimal.ZERO, cartItems, new SaleService.CheckoutCallback() {
+            @Override
+            public void onSuccess() {}
+            @Override
+            public void onError(Exception e) {}
+        });
 
         // 1. Verifica se deduziu o estoque do bolo (5 - 2 = 3)
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
@@ -146,7 +157,7 @@ public class InventoryControlTest {
         verify(mockSaleDao).insertSaleItems(saleItemsCaptor.capture());
         
         SaleItem savedSaleItem = saleItemsCaptor.getValue().get(0);
-        assertEquals(2.50, savedSaleItem.getCostPrice(), 0.001);
+        assertEquals(2.50, savedSaleItem.getCostPrice().doubleValue(), 0.001);
     }
     
     @Test
@@ -160,9 +171,14 @@ public class InventoryControlTest {
         
         when(mockProductDao.getByIdSynchronous(productId, userId)).thenReturn(product);
         
-        SaleItem cartItem = new SaleItem(0L, productId, "Produto", 10.0, 5.0, 5.0);
+        SaleItem cartItem = new SaleItem(0L, productId, "Produto", BigDecimal.valueOf(10.0), BigDecimal.valueOf(5.0), 5.0);
         
-        saleService.processCheckoutAsync(userId, 50.0, 20.0, Collections.singletonList(cartItem), () -> {});
+        saleService.processCheckoutAsync(userId, BigDecimal.valueOf(50.0), BigDecimal.valueOf(20.0), Collections.singletonList(cartItem), new SaleService.CheckoutCallback() {
+            @Override
+            public void onSuccess() {}
+            @Override
+            public void onError(Exception e) {}
+        });
 
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
         verify(mockProductDao).update(productCaptor.capture());
