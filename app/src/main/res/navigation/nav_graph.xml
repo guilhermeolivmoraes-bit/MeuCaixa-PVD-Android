@@ -8,7 +8,7 @@
     <!-- Telas de Autenticação -->
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.oliveira.meucaixa.ui.auth.WelcomeFragment"
+        android:name="com.oliveira.meucaixa.view.auth.WelcomeFragment"
         android:label="Bem-Vindo(a)"
         tools:layout="@layout/fragment_welcome">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.oliveira.meucaixa.ui.auth.SignUpFragment"
+        android:name="com.oliveira.meucaixa.view.auth.SignUpFragment"
         android:label="Inscrever-se"
         tools:layout="@layout/fragment_signup">
         <action
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.oliveira.meucaixa.ui.auth.LoginFragment"
+        android:name="com.oliveira.meucaixa.view.auth.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <argument
@@ -57,19 +57,19 @@
 
         <fragment
             android:id="@+id/navigation_dashboard"
-            android:name="com.oliveira.meucaixa.ui.dashboard.DashboardFragment"
+            android:name="com.oliveira.meucaixa.view.dashboard.DashboardFragment"
             android:label="Início"
             tools:layout="@layout/fragment_dashboard" />
 
         <fragment
             android:id="@+id/navigation_products"
-            android:name="com.oliveira.meucaixa.ui.products.ProductListFragment"
+            android:name="com.oliveira.meucaixa.view.products.ProductListFragment"
             android:label="Meus Produtos"
             tools:layout="@layout/fragment_product_list" />
 
         <fragment
             android:id="@+id/addEditProductFragment"
-            android:name="com.oliveira.meucaixa.ui.products.AddEditProductFragment"
+            android:name="com.oliveira.meucaixa.view.products.AddEditProductFragment"
             android:label="Adicionar/Editar Produto"
             tools:layout="@layout/fragment_add_edit_product">
             <argument
@@ -80,7 +80,7 @@
 
         <fragment
             android:id="@+id/navigation_sale"
-            android:name="com.oliveira.meucaixa.ui.sales.NewSaleFragment"
+            android:name="com.oliveira.meucaixa.view.sales.NewSaleFragment"
             android:label="Nova Venda"
             tools:layout="@layout/fragment_new_sale">
             <action
@@ -90,13 +90,13 @@
         
         <fragment
             android:id="@+id/productSearchFragment"
-            android:name="com.oliveira.meucaixa.ui.products.ProductSearchFragment"
+            android:name="com.oliveira.meucaixa.view.products.ProductSearchFragment"
             android:label="Buscar Produto"
             tools:layout="@layout/fragment_product_search" />
             
         <fragment
             android:id="@+id/addEditIngredientFragment"
-            android:name="com.oliveira.meucaixa.ui.products.AddEditIngredientFragment"
+            android:name="com.oliveira.meucaixa.view.products.AddEditIngredientFragment"
             android:label="Adicionar/Editar Insumo"
             tools:layout="@layout/fragment_add_edit_ingredient">
             <argument
@@ -107,7 +107,7 @@
 
         <fragment
             android:id="@+id/navigation_reports"
-            android:name="com.oliveira.meucaixa.ui.sales.ReportsFragment"
+            android:name="com.oliveira.meucaixa.view.sales.ReportsFragment"
             android:label="Relatórios"
             tools:layout="@layout/fragment_reports" />
 

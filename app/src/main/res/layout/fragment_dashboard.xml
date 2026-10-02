@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
     android:padding="24dp"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".view.dashboard.DashboardFragment">
 
     <!-- Título -->
     <TextView
